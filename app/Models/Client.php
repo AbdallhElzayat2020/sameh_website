@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
-    use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
-    class Client extends Model {
-        protected $fillable = [
+class Client extends Model
+{
+    protected $fillable = [
         'client_code',
         'name',
         'email',
         'phone',
         'agency',
-        ];
-    }
+        'currency',
+    ];
+
+    // Todo add nda Files
+}

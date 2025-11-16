@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-    use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
-    class Freelancer extends Model {
-        protected $fillable = [
+class Freelancer extends Model
+{
+    protected $fillable = [
         'freelancer_code',
         'name',
         'email',
@@ -14,12 +15,14 @@ namespace App\Models;
         'quota',
         'price_hr',
         'currency',
-        ];
+    ];
 
-        protected function casts(): array
-        {
+    protected function casts(): array
+    {
         return [
-        'language_pair' => 'array',
+            'language_pair' => 'array',
         ];
-        }
     }
+
+    // Todo add nda Files
+}

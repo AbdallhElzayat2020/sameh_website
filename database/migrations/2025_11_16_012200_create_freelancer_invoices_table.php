@@ -7,17 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('role_permission', function (Blueprint $table) {
+        Schema::create('freelancer_invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->constrained('roles');
-            $table->foreignId('permission_id')->constrained('permissions');
-            $table->unique(['role_id', 'permission_id']);
+            $table->foreignId('freelancer_po_id')->nullable()->constrained('freelancer_po')->nullOnDelete();
+            $table->enum('status', ['pending', 'in_progress', 'completed']);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('role_permission');
+        Schema::dropIfExists('freelancer_invoices');
     }
 };

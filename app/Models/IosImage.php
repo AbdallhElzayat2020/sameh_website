@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-    use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
-    class IosImage extends Model {
-        protected $fillable = [
+class IosImage extends Model
+{
+    protected $fillable = [
         'img_path',
         'title',
-        ];
-    }
+    ];
+}

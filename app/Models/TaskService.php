@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class IndustryOption extends Model
+class TaskService extends Model
 {
     protected $fillable = [
         'name',
-        'industry_id',
+        'task_id',
     ];
 
-    public function industry(): BelongsTo
+    public function task(): BelongsTo
     {
-        return $this->belongsTo(Industry::class);
+        return $this->belongsTo(Task::class);
     }
 }
