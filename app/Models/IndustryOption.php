@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Models;
+
+    use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+    class IndustryOption extends Model {
+        protected $fillable = [
+        'name',
+        'industry_id',
+        ];
+
+        public function industry(): BelongsTo
+        {
+        return $this->belongsTo(Industry::class);
+        }
+    }
