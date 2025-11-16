@@ -13,13 +13,6 @@ class Service extends Model
         'status',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'desc' => 'array',
-        ];
-    }
-
     public function projectRequests(): BelongsToMany
     {
         return $this->belongsToMany(ProjectRequest::class, 'request_service');
@@ -33,5 +26,12 @@ class Service extends Model
     public function clientPoServices(): BelongsToMany
     {
         return $this->belongsToMany(ClientPo::class, 'client_po_service');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'desc' => 'array',
+        ];
     }
 }

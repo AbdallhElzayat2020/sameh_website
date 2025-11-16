@@ -22,15 +22,6 @@ class FreelancerPo extends Model
         'status',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'start_date' => 'date',
-            'payment_date' => 'date',
-            'price' => 'decimal:2',
-        ];
-    }
-
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -44,5 +35,14 @@ class FreelancerPo extends Model
     public function invoice(): HasOne
     {
         return $this->hasOne(FreelancerInvoice::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'date',
+            'payment_date' => 'date',
+            'price' => 'decimal:2',
+        ];
     }
 }

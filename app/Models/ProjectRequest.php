@@ -25,16 +25,16 @@ class ProjectRequest extends Model
         'currency',
     ];
 
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class, 'request_service');
+    }
+
     protected function casts(): array
     {
         return [
             'start_date' => 'date',
             'end_date' => 'date',
         ];
-    }
-
-    public function services(): BelongsToMany
-    {
-        return $this->belongsToMany(Service::class, 'request_service');
     }
 }

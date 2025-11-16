@@ -40,19 +40,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
@@ -71,5 +58,18 @@ class User extends Authenticatable
     public function createdFreelancerPos(): HasMany
     {
         return $this->hasMany(FreelancerPo::class, 'created_by');
+    }
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 }

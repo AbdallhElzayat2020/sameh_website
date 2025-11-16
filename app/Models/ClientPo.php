@@ -15,20 +15,9 @@ class ClientPo extends Model
         'date_80',
         'payment_20',
         'payment_80',
-        'total_peice',
+        'total_price',
         'status',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'date_20' => 'date',
-            'date_80' => 'date',
-            'payment_20' => 'decimal:2',
-            'payment_80' => 'decimal:2',
-            'total_peice' => 'decimal:2',
-        ];
-    }
 
     public function services(): BelongsToMany
     {
@@ -38,5 +27,16 @@ class ClientPo extends Model
     public function invoice(): HasOne
     {
         return $this->hasOne(ClientInvoice::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'date_20' => 'date',
+            'date_80' => 'date',
+            'payment_20' => 'decimal:2',
+            'payment_80' => 'decimal:2',
+            'total_price' => 'decimal:2',
+        ];
     }
 }

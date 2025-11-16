@@ -25,15 +25,6 @@ class Task extends Model
         'status',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'start_date' => 'date',
-            'end_date' => 'date',
-            'language_pair' => 'array',
-        ];
-    }
-
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -57,5 +48,14 @@ class Task extends Model
     public function freelancerTasks(): HasMany
     {
         return $this->hasMany(FreelancerTask::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'date',
+            'end_date' => 'date',
+            'language_pair' => 'array',
+        ];
     }
 }
