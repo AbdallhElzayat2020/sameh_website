@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(FreelancerPo::class, 'created_by');
     }
 
+    public function isAdministrator(): bool
+    {
+        return $this->role()->where('roles.id', 1)->exists();
+    }
+
     /**
      * Get the attributes that should be cast.
      *
