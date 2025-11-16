@@ -15,9 +15,9 @@ class AuthorizationServiceProvider extends ServiceProvider
     public function boot()
     {
         Gate::before(function (User $user) {
-            if ($user->isAdministrator()) {
-                return true;
-            }
+            return $user->isAdministrator()
+                ? Response::allow()
+                : Response::denyAsNotFound();
         });
 
         $permissions = Permission::toBase()->get(['name']);
