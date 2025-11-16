@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('freelancer_invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('freelancer_po_id')->nullable()->constrained('freelancer_po')->nullOnDelete();
+            $table->foreignId('freelancer_po_id')->constrained();
             $table->enum('status', ['pending', 'in_progress', 'completed']);
             $table->timestamps();
         });

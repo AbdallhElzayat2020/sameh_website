@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('client_invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_po_id')->nullable()->constrained('client_po')->nullOnDelete();
+            $table->foreignId('client_po_id')->constrained();
             $table->enum('status', ['pending', 'in_progress', 'completed']);
             $table->timestamps();
         });
