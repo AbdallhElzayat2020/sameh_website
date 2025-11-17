@@ -20,7 +20,23 @@
             </a>
         </li>
 
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">إدارة الصلاحيات</span>
+        </li>
 
+        <li class="menu-item {{ request()->routeIs('dashboard.roles.*') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.roles.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div data-i18n="Roles">الأدوار</div>
+            </a>
+        </li>
+
+        <li class="menu-item {{ request()->routeIs('dashboard.permissions.*') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.permissions.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-shield-check"></i>
+                <div data-i18n="Permissions">الصلاحيات</div>
+            </a>
+        </li>
 
 
 

@@ -33,6 +33,18 @@ class LoginRequest extends FormRequest
     }
 
     /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'البريد الإلكتروني مطلوب.',
+            'email.email' => 'يجب أن يكون البريد الإلكتروني صحيحاً.',
+            'password.required' => 'كلمة المرور مطلوبة.',
+        ];
+    }
+
+    /**
      * Attempt to authenticate the request's credentials.
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -45,7 +57,16 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => __('البريد الإلكتروني أو كلمة المرور غير صحيحة.'),
+            ]);
+        }
+
+        // التحقق من حالة المستخدم
+        $user = Auth::user();
+        if ($user && $user->status !== 'active') {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => __('حسابك غير مفعّل. يرجى التواصل مع الإدارة.'),
             ]);
         }
 

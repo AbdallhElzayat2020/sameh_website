@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/price-request', [PriceRequestController::class, 'index'])->name('price-request');
 
+
+
+
 // require __DIR__.'/dashboard.php';
 
 Route::middleware('auth')->as('dashboard.')->group(function () {
