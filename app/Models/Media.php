@@ -11,6 +11,10 @@ class Media extends Model
         'mediaable_id',
         'mediaable_type',
         'type',
+        'path',
+        'original_name',
+        'mime_type',
+        'size',
     ];
 
     public function mediaable(): MorphTo

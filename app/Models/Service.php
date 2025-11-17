@@ -9,7 +9,7 @@ class Service extends Model
 {
     protected $fillable = [
         'name',
-        'desc',
+        'description',
         'status',
     ];
 
@@ -26,12 +26,5 @@ class Service extends Model
     public function clientPoServices(): BelongsToMany
     {
         return $this->belongsToMany(ClientPo::class, 'client_po_service');
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'desc' => 'array',
-        ];
     }
 }

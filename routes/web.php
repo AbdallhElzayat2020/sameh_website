@@ -7,11 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/price-request', [PriceRequestController::class, 'index'])->name('price-request');
+Route::post('/price-request', [PriceRequestController::class, 'store'])->name('price-request.store');
 
-
-
-
-// require __DIR__.'/dashboard.php';
 
 Route::middleware('auth')->as('dashboard.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -20,3 +17,4 @@ Route::middleware('auth')->as('dashboard.')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/dashboard.php';

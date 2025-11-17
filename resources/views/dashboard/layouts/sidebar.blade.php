@@ -20,33 +20,31 @@
             </a>
         </li>
 
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">إدارة المستخدمين</span>
-        </li>
-
         <li class="menu-item {{ request()->routeIs('dashboard.users.*') ? 'active' : '' }}">
             <a href="{{ route('dashboard.users.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-user"></i>
-                <div data-i18n="Users">المستخدمين</div>
+                <div data-i18n="Users">Users</div>
             </a>
         </li>
-
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">إدارة الصلاحيات</span>
-        </li>
-
 
         <li class="menu-item {{ request()->routeIs('dashboard.roles.*') ? 'active' : '' }}">
             <a href="{{ route('dashboard.roles.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-users"></i>
-                <div data-i18n="Roles">الأدوار</div>
+                <div data-i18n="Roles">Roles</div>
             </a>
         </li>
 
         <li class="menu-item {{ request()->routeIs('dashboard.permissions.*') ? 'active' : '' }}">
             <a href="{{ route('dashboard.permissions.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-shield-check"></i>
-                <div data-i18n="Permissions">الصلاحيات</div>
+                <div data-i18n="Permissions">Permissions</div>
+            </a>
+        </li>
+
+        <li class="menu-item {{ request()->routeIs('dashboard.project-requests.*') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.project-requests.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-file-dollar"></i>
+                <div data-i18n="Project Requests">Price Requests</div>
             </a>
         </li>
 

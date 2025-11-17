@@ -1,19 +1,28 @@
 @extends('website.layouts.master')
-@section('title','Price Request')
+@section('title', 'Price Request')
+
+@push('css')
+    <style>
+        .price-request-form select,
+        .price-request-form select option {
+            color: #0f172a;
+            background-color: #fff;
+        }
+    </style>
+@endpush
 
 @section('content')
-    <!-- Page Header Section with Breadcrumb -->
     <section class="page-header-section">
         <div class="container">
             <div class="page-header-content">
                 <nav class="breadcrumb-nav" aria-label="breadcrumb">
                     <ol class="breadcrumb-list">
                         <li class="breadcrumb-item">
-                            <a href="index.html">HOME</a>
+                            <a href="{{ route('home') }}">HOME</a>
                         </li>
                         <li class="breadcrumb-separator">></li>
                         <li class="breadcrumb-item">
-                            <a href="index.html#contact">CONTACT</a>
+                            <a href="{{ route('home') }}#contact">CONTACT</a>
                         </li>
                         <li class="breadcrumb-separator">></li>
                         <li class="breadcrumb-item active" aria-current="page">PRICE REQUEST</li>
@@ -24,129 +33,132 @@
         </div>
     </section>
 
-    <!-- Main Content Section -->
     <section class="page-content-section">
         <div class="container">
             <div class="row g-4">
-                <!-- Form Section -->
                 <div class="col-lg-8">
-                    <form class="price-request-form" id="priceRequestForm">
-                        <!-- Personal Information -->
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form class="price-request-form" id="priceRequestForm" method="POST"
+                        action="{{ route('price-request.store') }}" enctype="multipart/form-data">
+                        @csrf
+
                         <div class="form-section">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label for="firstName" class="form-label">First name</label>
-                                    <input type="text" class="form-control" id="firstName" name="firstName"
-                                           value="Ahmed" required>
+                                    <label for="first_name" class="form-label">First name</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name"
+                                        value="{{ old('first_name') }}" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="lastName" class="form-label">Last name</label>
-                                    <input type="text" class="form-control" id="lastName" name="lastName" value="Soled"
-                                           required>
+                                    <label for="last_name" class="form-label">Last name</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name"
+                                        value="{{ old('last_name') }}" required>
                                 </div>
                             </div>
                             <div class="row g-3 mt-2">
                                 <div class="col-md-6">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" name="email"
-                                           placeholder="Enter email here" required>
+                                        value="{{ old('email') }}" placeholder="Enter email here" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="projectName" class="form-label">Project Name</label>
-                                    <input type="text" class="form-control" id="projectName" name="projectName"
-                                           placeholder="Enter project name here" required>
+                                    <label for="project_name" class="form-label">Project Name</label>
+                                    <input type="text" class="form-control" id="project_name" name="project_name"
+                                        value="{{ old('project_name') }}" placeholder="Enter project name here" required>
+                                </div>
+                            </div>
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
+                                    <label for="source_language" class="form-label">Source Language</label>
+                                    <input type="text" class="form-control" id="source_language" name="source_language"
+                                        value="{{ old('source_language') }}" placeholder="e.g. Arabic" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="target_language" class="form-label">Target Language</label>
+                                    <input type="text" class="form-control" id="target_language" name="target_language"
+                                        value="{{ old('target_language') }}" placeholder="e.g. English" required>
                                 </div>
                             </div>
                             <div class="row g-3 mt-2">
                                 <div class="col-12">
-                                    <label for="details" class="form-label">Details / information</label>
-                                    <textarea class="form-control" id="details" name="details" rows="4"
-                                              placeholder="Enter text here"></textarea>
+                                    <label for="description" class="form-label">Details / information</label>
+                                    <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter text here"
+                                        required>{{ old('description') }}</textarea>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Services Selection -->
                         <div class="form-section">
                             <div class="row g-3">
                                 <div class="col-12">
-                                    <label for="services" class="form-label">Select Services</label>
-                                    <!-- <select class="form-control" id="services" name="services">
-                                        <option selected disabled>select services</option>
-                                        <option value="translation">Translation</option>
-                                        <option value="dtp">Desktop Publishing (DTP)</option>
-                                        <option value="interpreting">Interpreting</option>
-                                        <option value="localization">Localization</option>
-                                        <option value="subtitling">Subtitling / Closed Captioning</option>
-                                        <option value="transcription">Transcription</option>
-                                        <option value="transcreation">Transcreation</option>
-                                    </select> -->
+                                    <label class="form-label">Select Services</label>
                                 </div>
                             </div>
                             <div class="services-checkboxes mt-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="serviceTranslation"
-                                           name="servicesList" value="translation">
-                                    <label class="form-check-label" for="serviceTranslation">Translation</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="serviceDTP" name="servicesList"
-                                           value="dtp" checked>
-                                    <label class="form-check-label" for="serviceDTP">Desktop Publishing (DTP)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="serviceInterpreting"
-                                           name="servicesList" value="interpreting">
-                                    <label class="form-check-label" for="serviceInterpreting">Interpreting</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="serviceLocalization"
-                                           name="servicesList" value="localization">
-                                    <label class="form-check-label" for="serviceLocalization">Localization</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="serviceSubtitling"
-                                           name="servicesList" value="subtitling">
-                                    <label class="form-check-label" for="serviceSubtitling">Subtitling / Closed
-                                        Captioning</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="serviceTranscription"
-                                           name="servicesList" value="transcription">
-                                    <label class="form-check-label" for="serviceTranscription">Transcription</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="serviceTranscreation"
-                                           name="servicesList" value="transcreation">
-                                    <label class="form-check-label" for="serviceTranscreation">Transcreation</label>
-                                </div>
+                                @forelse ($services as $service)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                            id="service-{{ $service->id }}" name="services[]"
+                                            value="{{ $service->id }}"
+                                            @checked(in_array($service->id, old('services', [])))>
+                                        <label class="form-check-label" for="service-{{ $service->id }}">
+                                            {{ $service->name }}
+                                        </label>
+                                    </div>
+                                @empty
+                                    @foreach ($fallbackServices as $index => $serviceName)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="fallback-service-{{ $index }}" name="services[]"
+                                                value="{{ $serviceName }}"
+                                                @checked(in_array($serviceName, old('services', [])))>
+                                            <label class="form-check-label" for="fallback-service-{{ $index }}">
+                                                {{ $serviceName }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                @endforelse
                             </div>
                         </div>
 
-                        <!-- Time and Date Selection -->
                         <div class="form-section">
                             <div class="row g-3">
                                 <div class="col-12">
-                                    <label for="timeZone" class="form-label">Time Zone</label>
-                                    <select class="form-control" id="timeZone" name="timeZone">
-                                        <option value="">Select time zone</option>
-                                        <option value="UTC">UTC</option>
-                                        <option value="EST">EST (Eastern Standard Time)</option>
-                                        <option value="PST">PST (Pacific Standard Time)</option>
-                                        <option value="GMT">GMT (Greenwich Mean Time)</option>
-                                        <option value="CET">CET (Central European Time)</option>
+                                    <label for="time_zone" class="form-label">Time Zone</label>
+                                    <select class="form-control" id="time_zone" name="time_zone" required>
+                                        <option value="" disabled selected>Select time zone</option>
+                                        @foreach ($timeZones as $zone)
+                                            <option value="{{ $zone }}" @selected(old('time_zone') === $zone)>
+                                                {{ $zone }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
 
-                            <!-- Required Start Date -->
                             <div class="row g-3 mt-2">
                                 <div class="col-12">
                                     <label class="form-label">Required Start Date</label>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group">
-                                        <input type="date" class="form-control" id="startDate" name="startDate">
+                                        <input type="date" class="form-control" id="start_date" name="start_date"
+                                            value="{{ old('start_date') }}" required>
                                         <span class="input-group-icon">
                                             <i class="far fa-calendar-alt"></i>
                                         </span>
@@ -154,7 +166,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group">
-                                        <input type="time" class="form-control" id="startTime" name="startTime">
+                                        <input type="time" class="form-control" id="start_time" name="start_time"
+                                            value="{{ old('start_time') }}" required>
                                         <span class="input-group-icon">
                                             <i class="far fa-clock"></i>
                                         </span>
@@ -162,14 +175,14 @@
                                 </div>
                             </div>
 
-                            <!-- Required Delivery Date -->
                             <div class="row g-3 mt-2">
                                 <div class="col-12">
                                     <label class="form-label">Required Delivery Date</label>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group">
-                                        <input type="date" class="form-control" id="deliveryDate" name="deliveryDate">
+                                        <input type="date" class="form-control" id="end_date" name="end_date"
+                                            value="{{ old('end_date') }}" required>
                                         <span class="input-group-icon">
                                             <i class="far fa-calendar-alt"></i>
                                         </span>
@@ -177,7 +190,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group">
-                                        <input type="time" class="form-control" id="deliveryTime" name="deliveryTime">
+                                        <input type="time" class="form-control" id="end_time" name="end_time"
+                                            value="{{ old('end_time') }}" required>
                                         <span class="input-group-icon">
                                             <i class="far fa-clock"></i>
                                         </span>
@@ -186,29 +200,37 @@
                             </div>
                         </div>
 
-                        <!-- Payment and Files -->
                         <div class="form-section">
                             <div class="row g-3">
-                                <div class="col-12">
-                                    <label for="paymentCurrency" class="form-label">Your Preferred Payment
-                                        Currency</label>
-                                    <input type="text" class="form-control" id="paymentCurrency" name="paymentCurrency"
-                                           placeholder="Your Preferred Payment Currency">
+                                <div class="col-md-6">
+                                    <label for="preferred_payment_type" class="form-label">Preferred Payment Method</label>
+                                    <input type="text" class="form-control" id="preferred_payment_type"
+                                        name="preferred_payment_type" value="{{ old('preferred_payment_type') }}"
+                                        placeholder="e.g. Bank transfer" required>
                                 </div>
+                                <div class="col-md-6">
+                                    <label for="currency" class="form-label">Preferred Currency</label>
+                                    <input type="text" class="form-control" id="currency" name="currency"
+                                        value="{{ old('currency') }}" placeholder="e.g. USD" required>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mt-2">
                                 <div class="col-12">
-                                    <label for="fileUpload" class="form-label">Upload the files</label>
+                                    <label for="attachments" class="form-label">Upload the files</label>
                                     <div class="file-upload-wrapper">
-                                        <input type="file" class="form-control file-input" id="fileUpload"
-                                               name="fileUpload" multiple>
+                                        <input type="file" class="form-control file-input" id="attachments"
+                                            name="attachments[]" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip"
+                                            multiple>
                                         <span class="file-upload-icon">
                                             <i class="fas fa-arrow-up"></i>
                                         </span>
                                     </div>
+                                    <small class="text-muted d-block mt-1">Images and documents up to 20MB each.</small>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Submit Button -->
                         <div class="form-section mt-4">
                             <button type="submit" class="price-request-submit-btn">
                                 Send Request
@@ -217,25 +239,22 @@
                     </form>
                 </div>
 
-                <!-- Instructions Panel -->
                 <div class="col-lg-4">
                     <div class="instructions-panel">
                         <h3 class="instructions-title">HOW TO SEND US A REQUEST?</h3>
                         <ol class="instructions-list">
-                            <li>Enter your personal information (First name, Last name, Email, Project Name)</li>
-                            <li>Provide details about your project in the "Details / information" field</li>
-                            <li>Select the service type from the dropdown menu</li>
-                            <li>Check the specific services you need from the list</li>
-                            <li>Select your time zone</li>
-                            <li>Choose your required start date and time</li>
-                            <li>Choose your required delivery date and time</li>
-                            <li>Enter your preferred payment currency</li>
-                            <li>Upload any relevant files for your project</li>
-                            <li>Click "Send Request" to submit your request</li>
+                            <li>Fill in your personal details and project name</li>
+                            <li>Select source and target languages</li>
+                            <li>Describe your project requirements</li>
+                            <li>Choose the services you need</li>
+                            <li>Set your timeframe and time zone</li>
+                            <li>Select payment method and currency</li>
+                            <li>Upload any reference files</li>
+                            <li>Submit the form to notify our project managers</li>
                         </ol>
                         <p class="instructions-note">
-                            This request is sent to the project manager, who will then send you a quote or an order
-                            confirmation.
+                            Once we receive your request, our team reviews it and shares the best quote or order confirmation
+                            with you.
                         </p>
                     </div>
                 </div>
