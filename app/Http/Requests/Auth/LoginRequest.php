@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -53,6 +54,15 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        $user = User::where('email', $this->string('email'))->first();
+
+        if ($user && $user->status !== 'active') {
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'email' => __('حسابك معطل. يرجى التواصل مع الإدارة لتفعيل حسابك.'),
+            ]);
+        }
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
@@ -61,12 +71,12 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        // التحقق من حالة المستخدم
-        $user = Auth::user();
-        if ($user && $user->status !== 'active') {
+        $authenticatedUser = Auth::user();
+        if ($authenticatedUser && $authenticatedUser->status !== 'active') {
             Auth::logout();
+            RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
-                'email' => __('حسابك غير مفعّل. يرجى التواصل مع الإدارة.'),
+                'email' => __('حسابك معطل. يرجى التواصل مع الإدارة لتفعيل حسابك.'),
             ]);
         }
 

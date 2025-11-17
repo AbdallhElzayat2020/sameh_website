@@ -21,8 +21,20 @@
         </li>
 
         <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">إدارة المستخدمين</span>
+        </li>
+
+        <li class="menu-item {{ request()->routeIs('dashboard.users.*') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.users.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-user"></i>
+                <div data-i18n="Users">المستخدمين</div>
+            </a>
+        </li>
+
+        <li class="menu-header small text-uppercase">
             <span class="menu-header-text">إدارة الصلاحيات</span>
         </li>
+
 
         <li class="menu-item {{ request()->routeIs('dashboard.roles.*') ? 'active' : '' }}">
             <a href="{{ route('dashboard.roles.index') }}" class="menu-link">
