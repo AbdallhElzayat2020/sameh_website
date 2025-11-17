@@ -53,6 +53,25 @@ class ProjectRequestController extends Controller
 
         return $disk->download($media->path, $media->original_name);
     }
+    public function destroyAttachment(ProjectRequest $projectRequest, Media $media)
+    {
+        abort_if(
+            $media->mediaable_type !== ProjectRequest::class || $media->mediaable_id !== $projectRequest->id,
+            404
+        );
+
+        $disk = Storage::disk('uploads');
+
+        if ($media->path && $disk->exists($media->path)) {
+            $disk->delete($media->path);
+        }
+
+        $media->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'Attachment deleted successfully.');
+    }
 
     public function updateStatus(Request $request, ProjectRequest $projectRequest)
     {

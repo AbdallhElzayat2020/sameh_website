@@ -111,10 +111,21 @@
                                         <span class="fw-semibold d-block">{{ $media->original_name }}</span>
                                         <small class="text-muted">{{ strtoupper($media->type) }} • {{ number_format($media->size / 1024, 1) }} KB</small>
                                     </div>
-                                    <a class="btn btn-sm btn-outline-primary"
-                                        href="{{ route('dashboard.project-requests.attachments.download', [$projectRequest, $media]) }}">
-                                        Download
-                                    </a>
+                                    <div class="d-flex gap-2">
+                                        <a class="btn btn-sm btn-outline-primary"
+                                            href="{{ route('dashboard.project-requests.attachments.download', [$projectRequest, $media]) }}">
+                                            Download
+                                        </a>
+                                        <form method="POST" class="m-0"
+                                            action="{{ route('dashboard.project-requests.attachments.destroy', [$projectRequest, $media]) }}"
+                                            onsubmit="return confirm('Delete this attachment?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>

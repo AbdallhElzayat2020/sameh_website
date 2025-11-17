@@ -3,28 +3,43 @@
 
 @section('content')
     <div class="card">
-        <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div>
-                <h4 class="mb-1">Price Requests</h4>
-                <p class="mb-0 text-muted">Manage submissions from the website form.</p>
-            </div>
-            <form method="GET" class="d-flex align-items-center flex-wrap gap-2">
-                <div class="input-group" style="min-width: 260px;">
-                    <span class="input-group-text">
-                        <i class="ti ti-search"></i>
-                    </span>
-                    <input type="text" name="search" class="form-control" placeholder="Search client, email, project"
-                        value="{{ request('search') }}">
+        <div class="card-header">
+
+            <!-- العنوان فوق -->
+            <h4 class="mb-3">Price Requests</h4>
+
+            <!-- الفلاتر تحت وجنب بعض -->
+            <form method="GET" class="row g-2 align-items-center">
+
+                <!-- Search input -->
+                <div class="col-auto">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ti ti-search"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control" placeholder="Search client, email, project"
+                            value="{{ request('search') }}">
+                    </div>
                 </div>
-                <select name="status" class="form-select">
-                    <option value="">All statuses</option>
-                    <option value="pending" @selected(request('status') === 'pending')>Pending review</option>
-                    <option value="in_progress" @selected(request('status') === 'in_progress')>In progress</option>
-                    <option value="completed" @selected(request('status') === 'completed')>Completed</option>
-                </select>
-                <button type="submit" class="btn btn-primary">Apply</button>
+
+                <!-- Status select -->
+                <div class="col-auto">
+                    <select name="status" class="form-select">
+                        <option value="">All statuses</option>
+                        <option value="pending" @selected(request('status') === 'pending')>Pending review</option>
+                        <option value="in_progress" @selected(request('status') === 'in_progress')>In progress</option>
+                        <option value="completed" @selected(request('status') === 'completed')>Completed</option>
+                    </select>
+                </div>
+
+                <!-- Apply button -->
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </div>
+
             </form>
         </div>
+
 
         <div class="table-responsive">
             <table class="table table-striped mb-0">
@@ -53,7 +68,8 @@
                                         {{ $request->services->pluck('name')->take(2)->join(', ') }}
                                     </span>
                                     @if ($request->services->count() > 2)
-                                        <small class="text-muted d-block">+{{ $request->services->count() - 2 }} more</small>
+                                        <small class="text-muted d-block">+{{ $request->services->count() - 2 }}
+                                            more</small>
                                     @endif
                                 @else
                                     <span class="text-muted">No services selected</span>

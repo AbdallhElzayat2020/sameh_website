@@ -23,12 +23,19 @@ Route::prefix('dashboard')->middleware('auth')->as('dashboard.')->group(function
     // Project Requests Routes
     Route::get('/project-requests', [ProjectRequestController::class, 'index'])
         ->name('project-requests.index');
+
     Route::get('/project-requests/{projectRequest}', [ProjectRequestController::class, 'show'])
         ->name('project-requests.show');
+
     Route::get('/project-requests/{projectRequest}/attachments/{media}', [ProjectRequestController::class, 'downloadAttachment'])
         ->name('project-requests.attachments.download');
+
+    Route::delete('/project-requests/{projectRequest}/attachments/{media}', [ProjectRequestController::class, 'destroyAttachment'])
+        ->name('project-requests.attachments.destroy');
+
     Route::patch('/project-requests/{projectRequest}/status', [ProjectRequestController::class, 'updateStatus'])
         ->name('project-requests.update-status');
+
     Route::delete('/project-requests/{projectRequest}', [ProjectRequestController::class, 'destroy'])
         ->name('project-requests.destroy');
 });
