@@ -51,7 +51,7 @@ class ProjectRequestController extends Controller
         $disk = Storage::disk('uploads');
         abort_unless($disk->exists($media->path), 404);
 
-        return $disk->download($media->path, $media->original_name);
+        return response()->download($disk->path($media->path), $media->original_name);
     }
     public function destroyAttachment(ProjectRequest $projectRequest, Media $media)
     {
@@ -86,6 +86,53 @@ class ProjectRequestController extends Controller
         return redirect()
             ->back()
             ->with('success', 'Project request status updated successfully.');
+    }
+
+    public function storeAttachment(Request $request, ProjectRequest $projectRequest)
+    {
+        $validated = $request->validate([
+            'file_name' => ['required', 'string', 'max:255'],
+            'file_status' => ['required', 'in:DTP,Update'],
+            'note' => ['nullable', 'string'],
+            'attachments' => ['required', 'array', 'min:1'],
+            'attachments.*' => [
+                'file',
+                'max:20480',
+                'mimetypes:image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/zip,application/x-zip-compressed,text/plain',
+            ],
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($request->file('attachments') as $attachment) {
+                $filename = \Illuminate\Support\Str::uuid() . '.' . $attachment->getClientOriginalExtension();
+                $path = $attachment->storeAs('project-requests', $filename, 'uploads');
+
+                $projectRequest->media()->create([
+                    'type' => $attachment->getClientOriginalExtension(),
+                    'path' => $path,
+                    'original_name' => $validated['file_name'],
+                    'mime_type' => $attachment->getClientMimeType(),
+                    'size' => $attachment->getSize(),
+                    'note' => $validated['note'] ?? null,
+                    'file_status' => $validated['file_status'],
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->back()
+                ->with('success', 'Files uploaded successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to upload files. Please try again.');
+        }
     }
 
     public function destroy(ProjectRequest $projectRequest)

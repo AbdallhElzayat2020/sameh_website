@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Task extends Model
 {
@@ -48,6 +50,28 @@ class Task extends Model
     public function freelancerTasks(): HasMany
     {
         return $this->hasMany(FreelancerTask::class);
+    }
+
+    public function freelancers(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Freelancer::class,
+            'freelancer_task',
+            'task_id',
+            'freelancer_code',
+            'id',
+            'freelancer_code'
+        );
+    }
+
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class, 'task_service');
+    }
+
+    public function media(): MorphMany
+    {
+        return $this->morphMany(Media::class, 'mediaable');
     }
 
     protected function casts(): array

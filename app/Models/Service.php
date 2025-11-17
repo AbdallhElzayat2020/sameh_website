@@ -27,4 +27,9 @@ class Service extends Model
     {
         return $this->belongsToMany(ClientPo::class, 'client_po_service');
     }
+
+    public function freelancers(): BelongsToMany
+    {
+        return $this->belongsToMany(Freelancer::class, 'freelancer_service');
+    }
 }

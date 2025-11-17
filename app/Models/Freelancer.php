@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Freelancer extends Model
 {
@@ -24,5 +26,13 @@ class Freelancer extends Model
         ];
     }
 
-    // Todo add nda Files
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class, 'freelancer_service');
+    }
+
+    public function media(): MorphMany
+    {
+        return $this->morphMany(Media::class, 'mediaable');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Industry extends Model
 {
@@ -17,5 +18,8 @@ class Industry extends Model
         return $this->hasMany(IndustryOption::class, 'industry_id');
     }
 
-    // Todo morph image and icon
+    public function media(): MorphOne
+    {
+        return $this->morphOne(Media::class, 'mediaable');
+    }
 }
