@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('agency')->nullable();
             $table->string('currency')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

@@ -41,6 +41,13 @@
             </a>
         </li>
 
+        <li class="menu-item {{ request()->routeIs('dashboard.clients.*') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.clients.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-address-book"></i>
+                <div data-i18n="Clients">Clients</div>
+            </a>
+        </li>
+
         <li class="menu-item {{ request()->routeIs('dashboard.project-requests.*') ? 'active' : '' }}">
             <a href="{{ route('dashboard.project-requests.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-file-dollar"></i>

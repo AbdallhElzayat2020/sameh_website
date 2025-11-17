@@ -13,7 +13,11 @@ class Client extends Model
         'phone',
         'agency',
         'currency',
+        'created_by',
     ];
 
-    // Todo add nda Files
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

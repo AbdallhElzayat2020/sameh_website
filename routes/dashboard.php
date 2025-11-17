@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\Dashboard\{
+    ClientController,
     HomeController,
-    RoleController,
     PermissionController,
-    UserController,
     ProjectRequestController,
+    RoleController,
+    UserController
 };
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,9 @@ Route::prefix('dashboard')->middleware('auth')->as('dashboard.')->group(function
 
     // Permissions Routes
     Route::resource('/permissions', PermissionController::class);
+
+    // Clients Routes
+    Route::resource('/clients', ClientController::class);
 
     // Project Requests Routes
     Route::get('/project-requests', [ProjectRequestController::class, 'index'])
