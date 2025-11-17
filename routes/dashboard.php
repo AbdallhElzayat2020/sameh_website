@@ -26,6 +26,12 @@ Route::prefix('dashboard')->middleware('auth')->as('dashboard.')->group(function
     // Clients Routes
     Route::resource('/clients', ClientController::class);
 
+    Route::get('/clients/{client}/attachments/{media}', [ClientController::class, 'downloadAttachment'])
+        ->name('clients.attachments.download');
+
+    Route::delete('/clients/{client}/attachments/{media}', [ClientController::class, 'destroyAttachment'])
+        ->name('clients.attachments.destroy');
+
     // Project Requests Routes
     Route::get('/project-requests', [ProjectRequestController::class, 'index'])
         ->name('project-requests.index');

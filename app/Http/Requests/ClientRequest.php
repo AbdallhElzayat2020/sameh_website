@@ -37,6 +37,12 @@ class ClientRequest extends FormRequest
             ],
             'agency' => ['nullable', 'string', 'max:255'],
             'currency' => ['nullable', 'string', 'max:50'],
+            'attachments' => ['nullable', 'array'],
+            'attachments.*' => [
+                'file',
+                'max:20480',
+                'mimetypes:image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/zip,application/x-zip-compressed,text/plain',
+            ],
         ];
     }
 }

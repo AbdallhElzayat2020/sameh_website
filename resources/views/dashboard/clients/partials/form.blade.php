@@ -29,4 +29,9 @@
         <input type="text" class="form-control" id="currency" name="currency"
             value="{{ old('currency', $client->currency ?? '') }}">
     </div>
+    <div class="col-12">
+        <label for="attachments" class="form-label">Attachments</label>
+        <input type="file" class="form-control" id="attachments" name="attachments[]" multiple>
+        <small class="text-muted">Images, PDF, Word, Excel up to 20MB each.</small>
+    </div>
 </div>

@@ -68,6 +68,43 @@
                     </div>
                 </div>
             </div>
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Attachments</h5>
+                </div>
+                <div class="card-body">
+                    @if ($client->media->isEmpty())
+                        <p class="text-muted mb-0">No attachments uploaded.</p>
+                    @else
+                        <div class="list-group">
+                            @foreach ($client->media as $media)
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="fw-semibold d-block">{{ $media->original_name }}</span>
+                                        <small class="text-muted">{{ strtoupper($media->type) }} •
+                                            {{ number_format($media->size / 1024, 1) }} KB</small>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a class="btn btn-sm btn-outline-primary"
+                                            href="{{ route('dashboard.clients.attachments.download', [$client, $media]) }}">
+                                            Download
+                                        </a>
+                                        <form method="POST"
+                                            action="{{ route('dashboard.clients.attachments.destroy', [$client, $media]) }}"
+                                            onsubmit="return confirm('Delete this attachment?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 @endsection
