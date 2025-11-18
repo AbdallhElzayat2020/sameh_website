@@ -15,7 +15,7 @@
                         @csrf
                         @method('PUT')
                         <div class="row g-3">
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <label for="total_capital_egp" class="form-label">Total Capital (EGP)</label>
                                 <input type="text"
                                     class="form-control @error('total_capital_egp') is-invalid @enderror"
@@ -25,7 +25,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <label for="total_capital_usd" class="form-label">Total Capital (USD)</label>
                                 <input type="text"
                                     class="form-control @error('total_capital_usd') is-invalid @enderror"
@@ -35,7 +35,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <label for="temporary_capital_egp" class="form-label">Temporary Capital (EGP)</label>
                                 <input type="text"
                                     class="form-control @error('temporary_capital_egp') is-invalid @enderror"
@@ -45,7 +45,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <label for="temporary_capital_usd" class="form-label">Temporary Capital (USD)</label>
                                 <input type="text"
                                     class="form-control @error('temporary_capital_usd') is-invalid @enderror"
@@ -55,7 +55,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <label for="emergency_capital_egp" class="form-label">Emergency Capital (EGP)</label>
                                 <input type="text"
                                     class="form-control @error('emergency_capital_egp') is-invalid @enderror"
@@ -65,7 +65,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <label for="emergency_capital_usd" class="form-label">Emergency Capital (USD)</label>
                                 <input type="text"
                                     class="form-control @error('emergency_capital_usd') is-invalid @enderror"
