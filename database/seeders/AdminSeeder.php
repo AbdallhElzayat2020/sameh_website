@@ -20,7 +20,6 @@ class AdminSeeder extends Seeder
             ['name' => 'Admin']
         );
 
-
         $allPermissions = Permission::all();
         if ($allPermissions->count() > 0) {
             $adminRole->permissions()->sync($allPermissions->pluck('id'));

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 class TaskController extends Controller
 {
@@ -72,8 +73,8 @@ class TaskController extends Controller
             // Sync freelancers
             $validated = $request->validated();
             if (isset($validated['freelancer_codes'])) {
-                $freelancerCodes = array_filter($validated['freelancer_codes'], fn($code) => !empty(trim($code)));
-                if (!empty($freelancerCodes)) {
+                $freelancerCodes = array_filter($validated['freelancer_codes'], fn ($code) => ! empty(trim($code)));
+                if (! empty($freelancerCodes)) {
                     $task->freelancers()->sync($freelancerCodes);
                 } else {
                     $task->freelancers()->detach();
@@ -97,11 +98,11 @@ class TaskController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             throw $e;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
 
             Log::error('Task creation failed: ' . $e->getMessage(), [
-                'exception' => $e
+                'exception' => $e,
             ]);
 
             return redirect()
@@ -131,7 +132,7 @@ class TaskController extends Controller
     {
         $code = $request->input('code');
 
-        if (!$code) {
+        if (! $code) {
             return response()->json(['found' => false, 'message' => 'Code is required']);
         }
 
@@ -142,7 +143,7 @@ class TaskController extends Controller
                 'found' => true,
                 'type' => 'client',
                 'id' => $client->id,
-                'url' => route('dashboard.clients.show', $client)
+                'url' => route('dashboard.clients.show', $client),
             ]);
         }
 
@@ -153,13 +154,13 @@ class TaskController extends Controller
                 'found' => true,
                 'type' => 'freelancer',
                 'id' => $freelancer->id,
-                'url' => route('dashboard.freelancers.show', $freelancer)
+                'url' => route('dashboard.freelancers.show', $freelancer),
             ]);
         }
 
         return response()->json([
             'found' => false,
-            'message' => 'Client or Freelancer with this code not found.'
+            'message' => 'Client or Freelancer with this code not found.',
         ]);
     }
 
@@ -167,7 +168,7 @@ class TaskController extends Controller
     {
         $taskNumber = $request->input('task_number');
 
-        if (!$taskNumber) {
+        if (! $taskNumber) {
             return response()->json(['found' => false, 'message' => 'Task number is required']);
         }
 
@@ -176,13 +177,13 @@ class TaskController extends Controller
             return response()->json([
                 'found' => true,
                 'id' => $task->id,
-                'url' => route('dashboard.tasks.show', $task)
+                'url' => route('dashboard.tasks.show', $task),
             ]);
         }
 
         return response()->json([
             'found' => false,
-            'message' => 'Task with this number not found.'
+            'message' => 'Task with this number not found.',
         ]);
     }
 
@@ -206,12 +207,12 @@ class TaskController extends Controller
             return redirect()
                 ->back()
                 ->with('success', 'Files uploaded successfully.');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
 
             Log::error('File upload failed: ' . $e->getMessage(), [
                 'task_id' => $task->id,
-                'exception' => $e
+                'exception' => $e,
             ]);
 
             return redirect()
@@ -240,8 +241,8 @@ class TaskController extends Controller
             // Sync freelancers
             $validated = $request->validated();
             if (isset($validated['freelancer_codes'])) {
-                $freelancerCodes = array_filter($validated['freelancer_codes'], fn($code) => !empty(trim($code)));
-                if (!empty($freelancerCodes)) {
+                $freelancerCodes = array_filter($validated['freelancer_codes'], fn ($code) => ! empty(trim($code)));
+                if (! empty($freelancerCodes)) {
                     $task->freelancers()->sync($freelancerCodes);
                 } else {
                     $task->freelancers()->detach();
@@ -265,12 +266,12 @@ class TaskController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             throw $e;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
 
             Log::error('Task update failed: ' . $e->getMessage(), [
                 'task_id' => $task->id,
-                'exception' => $e
+                'exception' => $e,
             ]);
 
             return redirect()
@@ -350,7 +351,7 @@ class TaskController extends Controller
             return redirect()
                 ->back()
                 ->with('success', 'Files uploaded successfully.');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
 
             return redirect()
@@ -381,7 +382,7 @@ class TaskController extends Controller
 
     protected function storeAttachments(Request $request, Task $task): void
     {
-        if (!$request->hasFile('attachments')) {
+        if (! $request->hasFile('attachments')) {
             return;
         }
 
@@ -409,7 +410,7 @@ class TaskController extends Controller
             foreach ($validated['language_pair'] as $pair) {
                 if (
                     isset($pair['source']) && isset($pair['target'])
-                    && !empty(trim($pair['source'])) && !empty(trim($pair['target']))
+                    && ! empty(trim($pair['source'])) && ! empty(trim($pair['target']))
                 ) {
                     $languages[] = [
                         'source' => trim($pair['source']),
@@ -431,7 +432,7 @@ class TaskController extends Controller
         $data['language_pair'] = $languages;
 
         // Convert reference_number (task_number) to id
-        if (isset($data['reference_number']) && !empty($data['reference_number'])) {
+        if (isset($data['reference_number']) && ! empty($data['reference_number'])) {
             $referencedTask = Task::where('task_number', $data['reference_number'])->first();
             if ($referencedTask) {
                 $data['reference_number'] = $referencedTask->id;

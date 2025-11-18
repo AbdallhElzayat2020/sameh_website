@@ -8,6 +8,7 @@ use App\Models\ProjectRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class ProjectRequestController extends Controller
 {
@@ -15,7 +16,7 @@ class ProjectRequestController extends Controller
     {
         $projectRequests = ProjectRequest::query()
             ->with('services')
-            ->when($request->filled('status'), fn($query) => $query->where('status', $request->string('status')))
+            ->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')))
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = '%' . (string) $request->string('search')->trim() . '%';
 
@@ -53,6 +54,7 @@ class ProjectRequestController extends Controller
 
         return response()->download($disk->path($media->path), $media->original_name);
     }
+
     public function destroyAttachment(ProjectRequest $projectRequest, Media $media)
     {
         abort_if(
@@ -125,7 +127,7 @@ class ProjectRequestController extends Controller
             return redirect()
                 ->back()
                 ->with('success', 'Files uploaded successfully.');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
 
             return redirect()

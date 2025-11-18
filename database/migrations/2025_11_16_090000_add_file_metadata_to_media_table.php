@@ -9,19 +9,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('media', function (Blueprint $table) {
-            if (!Schema::hasColumn('media', 'path')) {
+            if (! Schema::hasColumn('media', 'path')) {
                 $table->string('path')->after('type');
             }
 
-            if (!Schema::hasColumn('media', 'original_name')) {
+            if (! Schema::hasColumn('media', 'original_name')) {
                 $table->string('original_name')->after('path');
             }
 
-            if (!Schema::hasColumn('media', 'mime_type')) {
+            if (! Schema::hasColumn('media', 'mime_type')) {
                 $table->string('mime_type')->after('original_name');
             }
 
-            if (!Schema::hasColumn('media', 'size')) {
+            if (! Schema::hasColumn('media', 'size')) {
                 $table->unsignedBigInteger('size')->after('mime_type');
             }
         });

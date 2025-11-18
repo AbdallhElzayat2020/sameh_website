@@ -5,12 +5,11 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndustryRequest;
 use App\Models\Industry;
-use App\Models\IndustryOption;
-use App\Models\Media;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 class IndustryController extends Controller
 {
@@ -49,7 +48,7 @@ class IndustryController extends Controller
             return redirect()
                 ->route('dashboard.industries.index')
                 ->with('success', 'Industry created successfully.');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
 
             return redirect()
@@ -93,7 +92,7 @@ class IndustryController extends Controller
             return redirect()
                 ->route('dashboard.industries.index')
                 ->with('success', 'Industry updated successfully.');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
 
             return redirect()
@@ -119,7 +118,7 @@ class IndustryController extends Controller
         $existingIds = collect($options)
             ->pluck('id')
             ->filter()
-            ->map(fn($id) => (int) $id)
+            ->map(fn ($id) => (int) $id)
             ->all();
 
         // Delete options that are not in the submitted list
@@ -154,7 +153,7 @@ class IndustryController extends Controller
 
     protected function storeImage(Request $request, Industry $industry): void
     {
-        if (!$request->hasFile('image')) {
+        if (! $request->hasFile('image')) {
             return;
         }
 
@@ -178,7 +177,7 @@ class IndustryController extends Controller
 
     protected function deleteImage(Industry $industry): void
     {
-        if (!$industry->media) {
+        if (! $industry->media) {
             return;
         }
 

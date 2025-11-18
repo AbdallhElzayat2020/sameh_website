@@ -1,20 +1,18 @@
 <?php
 
-use App\Http\Controllers\Dashboard\{
-    ClientController,
-    ContactMessageController,
-    FreelancerController,
-    HomeController,
-    IndustryController,
-    IosImageController,
-    PermissionController,
-    ProjectRequestController,
-    RoleController,
-    ServiceController,
-    TaskController,
-    TestimonialController,
-    UserController
-};
+use App\Http\Controllers\Dashboard\ClientController;
+use App\Http\Controllers\Dashboard\ContactMessageController;
+use App\Http\Controllers\Dashboard\FreelancerController;
+use App\Http\Controllers\Dashboard\HomeController;
+use App\Http\Controllers\Dashboard\IndustryController;
+use App\Http\Controllers\Dashboard\IosImageController;
+use App\Http\Controllers\Dashboard\PermissionController;
+use App\Http\Controllers\Dashboard\ProjectRequestController;
+use App\Http\Controllers\Dashboard\RoleController;
+use App\Http\Controllers\Dashboard\ServiceController;
+use App\Http\Controllers\Dashboard\TaskController;
+use App\Http\Controllers\Dashboard\TestimonialController;
+use App\Http\Controllers\Dashboard\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('dashboard')->middleware('auth')->as('dashboard.')->group(function () {

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Permission;
 use App\Models\User;
+use Exception;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -33,7 +34,7 @@ class AuthorizationServiceProvider extends ServiceProvider
                             : Response::denyAsNotFound();
                     });
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Silently fail if table doesn't exist or is not ready yet
             }
         }

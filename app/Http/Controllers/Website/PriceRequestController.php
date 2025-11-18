@@ -9,24 +9,11 @@ use App\Models\Service;
 use DateTimeZone;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 class PriceRequestController extends Controller
 {
-    private function defaultServices(): array
-    {
-        return [
-            'Translation',
-            'Desktop Publishing (DTP)',
-            'Interpreting',
-            'Localization',
-            'Subtitling / Closed Captioning',
-            'Transcription',
-            'Transcreation',
-        ];
-    }
-
     public function index()
     {
         return view('website.price-request', [
@@ -60,12 +47,13 @@ class PriceRequestController extends Controller
                 'currency' => $data['currency'],
             ]);
 
-            if (!empty($data['services'])) {
+            if (! empty($data['services'])) {
                 $serviceIds = [];
 
                 foreach ($data['services'] as $serviceValue) {
                     if (is_numeric($serviceValue)) {
                         $serviceIds[] = (int) $serviceValue;
+
                         continue;
                     }
 
@@ -86,7 +74,7 @@ class PriceRequestController extends Controller
                     $serviceIds[] = $service->id;
                 }
 
-                if (!empty($serviceIds)) {
+                if (! empty($serviceIds)) {
                     $projectRequest->services()->sync($serviceIds);
                 }
             }
@@ -113,7 +101,7 @@ class PriceRequestController extends Controller
             return redirect()
                 ->route('price-request')
                 ->with('success', 'Your request has been submitted successfully.');
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
 
             Log::error('Failed to submit price request', [
@@ -126,5 +114,18 @@ class PriceRequestController extends Controller
                 ->withInput()
                 ->withErrors(['price_request' => 'Something went wrong while submitting your request. Please try again.']);
         }
+    }
+
+    private function defaultServices(): array
+    {
+        return [
+            'Translation',
+            'Desktop Publishing (DTP)',
+            'Interpreting',
+            'Localization',
+            'Subtitling / Closed Captioning',
+            'Transcription',
+            'Transcreation',
+        ];
     }
 }

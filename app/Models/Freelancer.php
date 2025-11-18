@@ -19,13 +19,6 @@ class Freelancer extends Model
         'currency',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'language_pair' => 'array',
-        ];
-    }
-
     public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class, 'freelancer_service');
@@ -34,5 +27,12 @@ class Freelancer extends Model
     public function media(): MorphMany
     {
         return $this->morphMany(Media::class, 'mediaable');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'language_pair' => 'array',
+        ];
     }
 }

@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
@@ -18,6 +17,7 @@ class UserController extends Controller
     {
 
         $users = User::with('role')->latest()->paginate(10);
+
         return view('dashboard.pages.users.index', compact('users'));
     }
 
@@ -25,6 +25,7 @@ class UserController extends Controller
     {
 
         $roles = Role::all();
+
         return view('dashboard.pages.users.create', compact('roles'));
     }
 
@@ -62,6 +63,7 @@ class UserController extends Controller
     {
 
         $roles = Role::all();
+
         return view('dashboard.pages.users.edit', compact('user', 'roles'));
     }
 
@@ -88,7 +90,7 @@ class UserController extends Controller
             'currency' => $validated['currency'] ?? null,
         ];
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $updateData['password'] = Hash::make($validated['password']);
         }
 
@@ -100,7 +102,7 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
-        if (!Auth::user()->isAdministrator()) {
+        if (! Auth::user()->isAdministrator()) {
             abort(403, 'فقط Admin الأساسي يمكنه حذف المستخدمين.');
         }
 

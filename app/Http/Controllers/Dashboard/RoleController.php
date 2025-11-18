@@ -14,12 +14,14 @@ class RoleController extends Controller
     public function index(): View
     {
         $roles = Role::with('permissions')->latest()->paginate(10);
+
         return view('dashboard.pages.roles.index', compact('roles'));
     }
 
     public function create(): View
     {
         $permissions = Permission::all();
+
         return view('dashboard.pages.roles.create', compact('permissions'));
     }
 
@@ -47,6 +49,7 @@ class RoleController extends Controller
     {
         $permissions = Permission::all();
         $rolePermissions = $role->permissions->pluck('id')->toArray();
+
         return view('dashboard.pages.roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 

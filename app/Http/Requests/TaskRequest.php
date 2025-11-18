@@ -5,8 +5,6 @@ namespace App\Http\Requests;
 use App\Models\Client;
 use App\Models\Freelancer;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class TaskRequest extends FormRequest
 {
@@ -33,7 +31,7 @@ class TaskRequest extends FormRequest
                 function ($attribute, $value, $fail) use ($taskId) {
                     if ($value) {
                         $referencedTask = \App\Models\Task::where('task_number', $value)->first();
-                        if (!$referencedTask) {
+                        if (! $referencedTask) {
                             $fail('The reference task number does not exist in the database.');
                         } elseif ($taskId && $referencedTask->id == $taskId) {
                             $fail('A task cannot reference itself.');
@@ -52,7 +50,7 @@ class TaskRequest extends FormRequest
                     $existsInClients = Client::where('client_code', $value)->exists();
                     $existsInFreelancers = Freelancer::where('freelancer_code', $value)->exists();
 
-                    if (!$existsInClients && !$existsInFreelancers) {
+                    if (! $existsInClients && ! $existsInFreelancers) {
                         $fail('The client code does not exist in the database.');
                     }
                 },
@@ -73,7 +71,7 @@ class TaskRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     if ($value) {
                         $exists = Freelancer::where('freelancer_code', $value)->exists();
-                        if (!$exists) {
+                        if (! $exists) {
                             $fail('The freelancer code "' . $value . '" does not exist in the database.');
                         }
                     }
