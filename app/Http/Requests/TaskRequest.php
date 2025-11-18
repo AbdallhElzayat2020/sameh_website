@@ -30,14 +30,13 @@ class TaskRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:100',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail) use ($taskId) {
                     if ($value) {
-                        // Check if reference_number exists in client_pos (task_code) or freelancer_pos (task_code)
-                        $existsInClientPo = DB::table('client_pos')->where('task_code', $value)->exists();
-                        $existsInFreelancerPo = DB::table('freelancer_pos')->where('task_code', $value)->exists();
-
-                        if (!$existsInClientPo && !$existsInFreelancerPo) {
-                            $fail('The reference number does not exist in the database.');
+                        $referencedTask = \App\Models\Task::where('task_number', $value)->first();
+                        if (!$referencedTask) {
+                            $fail('The reference task number does not exist in the database.');
+                        } elseif ($taskId && $referencedTask->id == $taskId) {
+                            $fail('A task cannot reference itself.');
                         }
                     }
                 },

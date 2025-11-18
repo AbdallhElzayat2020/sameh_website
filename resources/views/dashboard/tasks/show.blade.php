@@ -64,7 +64,10 @@
                                     <small class="text-muted d-block">Client Code</small>
                                     @php
                                         $client = \App\Models\Client::where('client_code', $task->client_code)->first();
-                                        $freelancer = \App\Models\Freelancer::where('freelancer_code', $task->client_code)->first();
+                                        $freelancer = \App\Models\Freelancer::where(
+                                            'freelancer_code',
+                                            $task->client_code,
+                                        )->first();
                                     @endphp
                                     @if ($client)
                                         <a href="{{ route('dashboard.clients.show', $client) }}"
@@ -81,8 +84,15 @@
                                     @endif
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <small class="text-muted d-block">Reference Number</small>
-                                    <span class="fw-semibold">{{ $task->reference_number ?? '-' }}</span>
+                                    <small class="text-muted d-block">Reference Task</small>
+                                    @if ($task->referencedTask)
+                                        <a href="{{ route('dashboard.tasks.show', $task->referencedTask) }}"
+                                            class="fw-semibold text-decoration-none">
+                                            {{ $task->referencedTask->task_number }}
+                                        </a>
+                                    @else
+                                        <span class="fw-semibold">-</span>
+                                    @endif
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <small class="text-muted d-block">Status</small>
@@ -92,7 +102,10 @@
                                             'in_progress' => ['label' => 'In Progress', 'class' => 'bg-label-info'],
                                             'completed' => ['label' => 'Completed', 'class' => 'bg-label-success'],
                                         ];
-                                        $status = $statusLabels[$task->status] ?? ['label' => $task->status, 'class' => 'bg-label-secondary'];
+                                        $status = $statusLabels[$task->status] ?? [
+                                            'label' => $task->status,
+                                            'class' => 'bg-label-secondary',
+                                        ];
                                     @endphp
                                     <span class="badge {{ $status['class'] }}">{{ $status['label'] }}</span>
                                 </div>
@@ -198,7 +211,8 @@
                                                         </div>
                                                         @if ($freelancer->language_pair && count($freelancer->language_pair) > 0)
                                                             <div class="col-12 mt-2">
-                                                                <small class="text-muted d-block mb-1">Language Pairs</small>
+                                                                <small class="text-muted d-block mb-1">Language
+                                                                    Pairs</small>
                                                                 <div class="d-flex flex-wrap gap-1">
                                                                     @foreach ($freelancer->language_pair as $pair)
                                                                         <span class="badge bg-label-secondary small">
@@ -290,8 +304,8 @@
                                                                 onsubmit="return confirm('Delete this file?');">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                                    title="Delete">
+                                                                <button type="submit"
+                                                                    class="btn btn-sm btn-outline-danger" title="Delete">
                                                                     <i class="ti ti-trash"></i>
                                                                 </button>
                                                             </form>
@@ -353,10 +367,12 @@
                                         <div>
                                             <h6 class="mb-1">{{ $service->name }}</h6>
                                             @if ($service->description)
-                                                <p class="mb-0 text-muted small">{{ Str::limit($service->description, 100) }}</p>
+                                                <p class="mb-0 text-muted small">
+                                                    {{ Str::limit($service->description, 100) }}</p>
                                             @endif
                                         </div>
-                                        <span class="badge {{ $service->status === 'active' ? 'bg-label-success' : 'bg-label-secondary' }}">
+                                        <span
+                                            class="badge {{ $service->status === 'active' ? 'bg-label-success' : 'bg-label-secondary' }}">
                                             {{ ucfirst($service->status) }}
                                         </span>
                                     </div>
@@ -393,7 +409,8 @@
                     @endif
 
                     <div class="mb-3">
-                        <label for="file_name" class="form-label">File Name <span class="text-danger">*</span></label>
+                        <label for="file_name" class="form-label">File Name <span
+                                class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="file_name" name="file_name"
                             value="{{ old('file_name') }}" placeholder="Name" required>
                     </div>
@@ -403,22 +420,22 @@
                         <select class="form-select" id="file_status" name="file_status" required>
                             <option value="">Status</option>
                             <option value="DTP" {{ old('file_status') === 'DTP' ? 'selected' : '' }}>DTP</option>
-                            <option value="Update" {{ old('file_status') === 'Update' ? 'selected' : '' }}>Update</option>
+                            <option value="Update" {{ old('file_status') === 'Update' ? 'selected' : '' }}>Update
+                            </option>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label for="note" class="form-label">Note</label>
-                        <textarea class="form-control" id="note" name="note" rows="3"
-                            placeholder="Enter text here">{{ old('note') }}</textarea>
+                        <textarea class="form-control" id="note" name="note" rows="3" placeholder="Enter text here">{{ old('note') }}</textarea>
                     </div>
 
                     <div class="mb-3">
                         <label for="attachments" class="form-label">Upload the Files <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="file" class="form-control" id="attachments" name="attachments[]" multiple
-                                required>
+                            <input type="file" class="form-control" id="attachments" name="attachments[]"
+                                multiple required>
                             <button class="btn btn-primary" type="button"
                                 onclick="document.getElementById('attachments').click()">
                                 <i class="ti ti-upload"></i>

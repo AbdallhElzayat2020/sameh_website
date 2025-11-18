@@ -55,6 +55,8 @@ Route::prefix('dashboard')->middleware('auth')->as('dashboard.')->group(function
     // Tasks Routes
     Route::get('/tasks/find-client-or-freelancer', [TaskController::class, 'findClientOrFreelancer'])
         ->name('tasks.find-client-or-freelancer');
+    Route::get('/tasks/find-task', [TaskController::class, 'findTask'])
+        ->name('tasks.find-task');
     Route::post('/tasks/{task}/upload-files', [TaskController::class, 'uploadFiles'])
         ->name('tasks.upload-files');
     Route::post('/tasks/{task}/attachments', [TaskController::class, 'storeAttachment'])

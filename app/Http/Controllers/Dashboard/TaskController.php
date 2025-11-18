@@ -20,14 +20,16 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $tasks = Task::query()
-            ->with(['creator', 'closer', 'freelancers'])
+            ->with(['creator', 'closer', 'freelancers', 'referencedTask'])
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = '%' . (string) $request->string('search')->trim() . '%';
                 $query->where(function ($subQuery) use ($term) {
                     $subQuery
                         ->where('task_number', 'like', $term)
-                        ->orWhere('reference_number', 'like', $term)
-                        ->orWhere('client_code', 'like', $term);
+                        ->orWhere('client_code', 'like', $term)
+                        ->orWhereHas('referencedTask', function ($q) use ($term) {
+                            $q->where('task_number', 'like', $term);
+                        });
                 });
             })
             ->when($request->filled('status'), function ($query) use ($request) {
@@ -111,7 +113,7 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
-        $task->load(['creator', 'closer', 'media', 'freelancers', 'services']);
+        $task->load(['creator', 'closer', 'media', 'freelancers', 'services', 'referencedTask']);
 
         return view('dashboard.tasks.show', compact('task'));
     }
@@ -158,6 +160,29 @@ class TaskController extends Controller
         return response()->json([
             'found' => false,
             'message' => 'Client or Freelancer with this code not found.'
+        ]);
+    }
+
+    public function findTask(Request $request)
+    {
+        $taskNumber = $request->input('task_number');
+
+        if (!$taskNumber) {
+            return response()->json(['found' => false, 'message' => 'Task number is required']);
+        }
+
+        $task = Task::where('task_number', $taskNumber)->first();
+        if ($task) {
+            return response()->json([
+                'found' => true,
+                'id' => $task->id,
+                'url' => route('dashboard.tasks.show', $task)
+            ]);
+        }
+
+        return response()->json([
+            'found' => false,
+            'message' => 'Task with this number not found.'
         ]);
     }
 
@@ -404,6 +429,18 @@ class TaskController extends Controller
 
         $data = collect($validated)->except('language_pair')->toArray();
         $data['language_pair'] = $languages;
+
+        // Convert reference_number (task_number) to id
+        if (isset($data['reference_number']) && !empty($data['reference_number'])) {
+            $referencedTask = Task::where('task_number', $data['reference_number'])->first();
+            if ($referencedTask) {
+                $data['reference_number'] = $referencedTask->id;
+            } else {
+                $data['reference_number'] = null;
+            }
+        } else {
+            $data['reference_number'] = null;
+        }
 
         return $data;
     }

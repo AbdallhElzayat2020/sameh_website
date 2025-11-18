@@ -56,8 +56,8 @@
                 <div class="col-lg-5">
                     <div class="about-visual rounded-4 overflow-hidden shadow-lg">
                         <!-- <img src="images/about-left.svg"
-                                                                                                                                                                    alt="Stacked cards showing real-world solutions and proven results"
-                                                                                                                                                                    class="img-fluid w-100" /> -->
+                                                                                                                                                                                alt="Stacked cards showing real-world solutions and proven results"
+                                                                                                                                                                                class="img-fluid w-100" /> -->
                         <img src="{{ asset('assets/website/images/small_about.png') }}" alt=""
                             class="img-fluid w-100 mt-3" />
                         <img src="{{ asset('assets/website/images/small_about.png') }}" alt=""
@@ -128,7 +128,8 @@
         $defaultServiceTitle = $activeService['name'] ?? 'Translation';
         $defaultServiceDescription =
             $activeService['description'] ??
-            'AI Artificial Intelligence is a branch of computer science that focuses on the development of intelligent machines that can perform tasks that typically require human intelligence.';
+            'AI Artificial Intelligence is a branch of computer science that focuses on the development of intelligent machines that
+can perform tasks that typically require human intelligence.';
         $serviceItemIndex = 0;
     @endphp
 
@@ -200,109 +201,115 @@
     @endpush
 
     <!-- Industries Section -->
-    <section class="industries-section" id="industries">
-        <div class="container">
-            <!-- Header -->
-            <div class="row mb-5">
-                <div class="col-lg-8">
-                    <div class="industries-header">
-                        <div class="small-tag mb-3">
-                            <span class="tag-icon"></span>
-                            <span>Industries</span>
+    @if (false)
+
+        <section class="industries-section" id="industries">
+            <div class="container">
+                <!-- Header -->
+                <div class="row mb-5">
+                    <div class="col-lg-8">
+                        <div class="industries-header">
+                            <div class="small-tag mb-3">
+                                <span class="tag-icon"></span>
+                                <span>Industries</span>
+                            </div>
+                            <h2 class="industries-title">TRANSFORMING BUSINESSES TO LEAD THEIR INDUSTRIES</h2>
                         </div>
-                        <h2 class="industries-title">TRANSFORMING BUSINESSES TO LEAD THEIR INDUSTRIES</h2>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a href="{{ route('price-request') }}" class="price-request-btn text-decoration-none">
+                            Price Request
+                            <span class="price-btn-icon">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </a>
                     </div>
                 </div>
-                <div class="col-lg-4 text-lg-end">
-                    <a href="{{ route('price-request') }}" class="price-request-btn text-decoration-none">
-                        Price Request
-                        <span class="price-btn-icon">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </span>
-                    </a>
-                </div>
-            </div>
 
-            <!-- Industry Filter Buttons -->
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="industry-filters d-flex flex-wrap gap-3" id="industry-filters">
-                        @forelse ($industries as $index => $industry)
-                            <button class="industry-filter-btn {{ $index === 0 ? 'active' : '' }}"
-                                data-industry="{{ $industry['slug'] }}" data-industry-id="{{ $industry['id'] }}">
-                                <span class="filter-icon">✦</span>
-                                <span>{{ $industry['name'] }}</span>
-                            </button>
-                        @empty
-                            <p class="text-muted">No industries available.</p>
-                        @endforelse
+                <!-- Industry Filter Buttons -->
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <div class="industry-filters d-flex flex-wrap gap-3" id="industry-filters">
+                            @forelse ($industries as $index => $industry)
+                                <button class="industry-filter-btn {{ $index === 0 ? 'active' : '' }}"
+                                    data-industry="{{ $industry['slug'] }}" data-industry-id="{{ $industry['id'] }}">
+                                    <span class="filter-icon">✦</span>
+                                    <span>{{ $industry['name'] }}</span>
+                                </button>
+                            @empty
+                                <p class="text-muted">No industries available.</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Main Content Area -->
-            <div class="row g-4 mb-5">
-                <!-- Left Panel - Image -->
-                <div class="col-lg-7">
-                    <div class="industry-visual-panel position-relative rounded-4 overflow-hidden">
-                        <div class="industry-visual-placeholder"
-                            id="industry-visual-placeholder"
-                            @if ($industries->isNotEmpty() && $industries->first()['image'])
-                                style="background-image: url('{{ $industries->first()['image'] }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"
-                            @endif>
-                            <div class="industry-visual-overlay">
-                                <h3 class="industry-visual-title" id="industry-visual-title">
-                                    {{ $industries->isNotEmpty() ? $industries->first()['name'] : 'Industries' }}
-                                </h3>
-                                <div class="industry-visual-line"></div>
+                <!-- Main Content Area -->
+                <div class="row g-4 mb-5">
+                    <!-- Left Panel - Image -->
+                    <div class="col-lg-7">
+                        <div class="industry-visual-panel position-relative rounded-4 overflow-hidden">
+                            <div class="industry-visual-placeholder" id="industry-visual-placeholder"
+                                @if ($industries->isNotEmpty() && $industries->first()['image']) style="background-image: url('{{ $industries->first()['image'] }}'); background-size: cover;
+                        background-position: center; background-repeat: no-repeat;" @endif>
+                                <div class="industry-visual-overlay">
+                                    <h3 class="industry-visual-title" id="industry-visual-title">
+                                        {{ $industries->isNotEmpty() ? $industries->first()['name'] : 'Industries' }}
+                                    </h3>
+                                    <div class="industry-visual-line"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Right Panel - Services List -->
+                    <div class="col-lg-5">
+                        <div class="industry-services-panel rounded-4">
+                            <h3 class="industry-services-title" id="industry-services-title">
+                                {{ $industries->isNotEmpty() ? strtoupper($industries->first()['name']) : 'INDUSTRIES' }}
+                            </h3>
+                            <div class="industry-services-divider"></div>
+                            <ul class="industry-services-list list-unstyled mb-0" id="industry-services-list">
+                                @if ($industries->isNotEmpty())
+                                    @foreach ($industries->first()['options'] as $option)
+                                        <li class="industry-service-item">
+                                            <span class="service-arrow">→</span>
+                                            <span>{{ $option }}</span>
+                                        </li>
+                                    @endforeach
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Right Panel - Services List -->
-                <div class="col-lg-5">
-                    <div class="industry-services-panel rounded-4">
-                        <h3 class="industry-services-title" id="industry-services-title">
-                            {{ $industries->isNotEmpty() ? strtoupper($industries->first()['name']) : 'INDUSTRIES' }}
-                        </h3>
-                        <div class="industry-services-divider"></div>
-                        <ul class="industry-services-list list-unstyled mb-0" id="industry-services-list">
-                            @if ($industries->isNotEmpty())
-                                @foreach ($industries->first()['options'] as $option)
-                                    <li class="industry-service-item">
-                                        <span class="service-arrow">→</span>
-                                        <span>{{ $option }}</span>
-                                    </li>
-                                @endforeach
-                            @endif
-                        </ul>
+                <!-- Description Section -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="industry-description">
+                            <p class="industry-description-text" id="industry-description-text">
+                                {{ $industries->isNotEmpty()
+                                    ? $industries->first()['description']
+                                    : 'Industry description will
+                                                                                                                        be available soon.' }}
+                            </p>
+                            <ul class="industry-description-list" id="industry-description-list">
+                                @if ($industries->isNotEmpty())
+                                    @foreach ($industries->first()['options'] as $option)
+                                        <li>{{ $option }}</li>
+                                    @endforeach
+                                @endif
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
+    @endif
 
-            <!-- Description Section -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="industry-description">
-                        <p class="industry-description-text" id="industry-description-text">
-                            {{ $industries->isNotEmpty() ? $industries->first()['description'] : 'Industry description will be available soon.' }}
-                        </p>
-                        <ul class="industry-description-list" id="industry-description-list">
-                            @if ($industries->isNotEmpty())
-                                @foreach ($industries->first()['options'] as $option)
-                                    <li>{{ $option }}</li>
-                                @endforeach
-                            @endif
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Valuable Customers Section -->
     <section class="customers-section" id="testimonials">
@@ -388,7 +395,7 @@
     </section>
 
     <!-- ISO Certification Section -->
-    @if($iosImages->isNotEmpty())
+    @if ($iosImages->isNotEmpty())
         <section class="iso-section" id="iso">
             <div class="container">
                 <div class="row">
@@ -560,8 +567,8 @@
                             </div>
                             <div class="mb-4">
                                 <label for="contact_message" class="form-label">MESSAGE</label>
-                                <textarea class="form-control" id="contact_message" name="message" rows="5"
-                                    placeholder="write message.." required>{{ old('message') }}</textarea>
+                                <textarea class="form-control" id="contact_message" name="message" rows="5" placeholder="write message.."
+                                    required>{{ old('message') }}</textarea>
                             </div>
                             <button type="submit" class="contact-submit-btn">
                                 SUBMIT
@@ -589,8 +596,8 @@
                                             d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z"
                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" />
-                                        <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
+                                        <circle cx="12" cy="10" r="3" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
                                 </div>
                                 <div class="contact-info-content">
@@ -654,9 +661,10 @@
                     </div>
                     <div class="col-lg-4 text-lg-end">
                         <a href="{{ route('price-request') }}" class="price-request-circle-btn">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 8L20 16L12 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 8L20 16L12 24" stroke="currentColor" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </a>
                     </div>

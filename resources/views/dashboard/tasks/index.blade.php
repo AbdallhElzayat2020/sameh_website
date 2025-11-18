@@ -60,14 +60,18 @@
                             <td>
                                 @php
                                     $client = \App\Models\Client::where('client_code', $task->client_code)->first();
-                                    $freelancer = \App\Models\Freelancer::where('freelancer_code', $task->client_code)->first();
+                                    $freelancer = \App\Models\Freelancer::where(
+                                        'freelancer_code',
+                                        $task->client_code,
+                                    )->first();
                                 @endphp
                                 @if ($client)
                                     <a href="{{ route('dashboard.clients.show', $client) }}" class="text-decoration-none">
                                         {{ $task->client_code }}
                                     </a>
                                 @elseif ($freelancer)
-                                    <a href="{{ route('dashboard.freelancers.show', $freelancer) }}" class="text-decoration-none">
+                                    <a href="{{ route('dashboard.freelancers.show', $freelancer) }}"
+                                        class="text-decoration-none">
                                         {{ $task->client_code }}
                                     </a>
                                 @else
@@ -86,7 +90,16 @@
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>{{ $task->reference_number ?? '-' }}</td>
+                            <td>
+                                @if ($task->referencedTask)
+                                    <a href="{{ route('dashboard.tasks.show', $task->referencedTask) }}"
+                                        class="text-decoration-none">
+                                        {{ $task->referencedTask->task_number }}
+                                    </a>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
                             <td>
                                 @php
                                     $statusLabels = [
@@ -94,7 +107,10 @@
                                         'in_progress' => ['label' => 'In Progress', 'class' => 'bg-label-info'],
                                         'completed' => ['label' => 'Completed', 'class' => 'bg-label-success'],
                                     ];
-                                    $status = $statusLabels[$task->status] ?? ['label' => $task->status, 'class' => 'bg-label-secondary'];
+                                    $status = $statusLabels[$task->status] ?? [
+                                        'label' => $task->status,
+                                        'class' => 'bg-label-secondary',
+                                    ];
                                 @endphp
                                 <span class="badge {{ $status['class'] }}">{{ $status['label'] }}</span>
                             </td>
@@ -103,11 +119,12 @@
                             <td>{{ $task->creator->name ?? '-' }}</td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('dashboard.tasks.show', $task) }}" class="btn btn-sm btn-outline-info"
-                                        title="View Details">
+                                    <a href="{{ route('dashboard.tasks.show', $task) }}"
+                                        class="btn btn-sm btn-outline-info" title="View Details">
                                         <i class="ti ti-eye"></i>
                                     </a>
-                                    <a href="{{ route('dashboard.tasks.edit', $task) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route('dashboard.tasks.edit', $task) }}"
+                                        class="btn btn-sm btn-outline-primary">
                                         Edit
                                     </a>
                                     <form method="POST" action="{{ route('dashboard.tasks.destroy', $task) }}"

@@ -37,6 +37,16 @@ class Task extends Model
         return $this->belongsTo(User::class, 'closed_by');
     }
 
+    public function referencedTask(): BelongsTo
+    {
+        return $this->belongsTo(Task::class, 'reference_number');
+    }
+
+    public function referencingTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'reference_number');
+    }
+
     public function taskServices(): HasMany
     {
         return $this->hasMany(TaskService::class);

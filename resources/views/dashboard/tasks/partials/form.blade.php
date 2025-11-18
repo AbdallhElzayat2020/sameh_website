@@ -3,10 +3,12 @@
     $clients = $clients ?? collect();
     $services = $services ?? collect();
     $languageRows = collect(old('language_pair', $task->language_pair ?? []))
-        ->map(fn($row) => [
-            'source' => $row['source'] ?? '',
-            'target' => $row['target'] ?? '',
-        ])
+        ->map(
+            fn($row) => [
+                'source' => $row['source'] ?? '',
+                'target' => $row['target'] ?? '',
+            ],
+        )
         ->filter(fn($row) => $row['source'] !== '' || $row['target'] !== '')
         ->values()
         ->all();
@@ -49,9 +51,20 @@
         <div id="clientCodeError" class="text-danger small d-none"></div>
     </div>
     <div class="col-md-6">
-        <label for="reference_number" class="form-label">Reference Number</label>
-        <input type="text" class="form-control" id="reference_number" name="reference_number"
-            value="{{ old('reference_number', $task->reference_number ?? '') }}">
+        <label for="reference_number" class="form-label">Reference Task Number</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="reference_number" name="reference_number"
+                value="{{ old('reference_number', $task->referencedTask->task_number ?? '') }}"
+                placeholder="Enter task number">
+            <button type="button" class="btn btn-outline-primary" id="viewReferenceTaskBtn"
+                title="View Reference Task">
+                <i class="ti ti-external-link"></i>
+            </button>
+        </div>
+        @error('reference_number')
+            <div class="text-danger small">{{ $message }}</div>
+        @enderror
+        <div id="referenceTaskError" class="text-danger small d-none"></div>
     </div>
     <div class="col-md-6">
         <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
@@ -60,7 +73,8 @@
             </option>
             <option value="in_progress" {{ old('status', $task->status ?? '') === 'in_progress' ? 'selected' : '' }}>In
                 Progress</option>
-            <option value="completed" {{ old('status', $task->status ?? '') === 'completed' ? 'selected' : '' }}>Completed
+            <option value="completed" {{ old('status', $task->status ?? '') === 'completed' ? 'selected' : '' }}>
+                Completed
             </option>
         </select>
         @error('status')
@@ -111,8 +125,7 @@
     </div>
     <div class="col-12">
         <label for="notes" class="form-label">Notes</label>
-        <textarea class="form-control" id="notes" name="notes"
-            rows="4">{{ old('notes', $task->notes ?? '') }}</textarea>
+        <textarea class="form-control" id="notes" name="notes" rows="4">{{ old('notes', $task->notes ?? '') }}</textarea>
     </div>
 </div>
 
@@ -190,8 +203,9 @@
         @forelse ($services as $service)
             <div class="col-md-4">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="service_ids[]" value="{{ $service->id }}"
-                        id="service_{{ $service->id }}" {{ (old('service_ids') && in_array($service->id, old('service_ids'))) || ($task->exists && $task->services->contains($service->id)) ? 'checked' : '' }}>
+                    <input class="form-check-input" type="checkbox" name="service_ids[]"
+                        value="{{ $service->id }}" id="service_{{ $service->id }}"
+                        {{ (old('service_ids') && in_array($service->id, old('service_ids'))) || ($task->exists && $task->services->contains($service->id)) ? 'checked' : '' }}>
                     <label class="form-check-label" for="service_{{ $service->id }}">
                         {{ $service->name }}
                     </label>
@@ -211,7 +225,7 @@
 @push('scripts')
     @once
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 const container = document.getElementById('languageRows');
                 const addBtn = document.getElementById('addLanguageRow');
 
@@ -223,22 +237,22 @@
                     wrapper.classList.add('card', 'mb-3', 'language-row');
                     wrapper.dataset.index = index;
                     wrapper.innerHTML = `
-                                                                        <div class="card-body row g-3 align-items-end">
-                                                                            <div class="col-md-5">
-                                                                                <label class="form-label">Source</label>
-                                                                                <input type="text" class="form-control" name="language_pair[${index}][source]" required>
-                                                                            </div>
-                                                                            <div class="col-md-5">
-                                                                                <label class="form-label">Target</label>
-                                                                                <input type="text" class="form-control" name="language_pair[${index}][target]" required>
-                                                                            </div>
-                                                                            <div class="col-md-2 d-flex justify-content-end">
-                                                                                <button type="button" class="btn btn-outline-danger remove-language">
-                                                                                    <i class="ti ti-trash"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    `;
+                        <div class="card-body row g-3 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label">Source</label>
+                                <input type="text" class="form-control" name="language_pair[${index}][source]" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label">Target</label>
+                                <input type="text" class="form-control" name="language_pair[${index}][target]" required>
+                            </div>
+                            <div class="col-md-2 d-flex justify-content-end">
+                                <button type="button" class="btn btn-outline-danger remove-language">
+                                    <i class="ti ti-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        `;
                     container.appendChild(wrapper);
                 });
 
@@ -265,18 +279,18 @@
                     wrapper.classList.add('card', 'mb-3', 'freelancer-row');
                     wrapper.dataset.index = index;
                     wrapper.innerHTML = `
-                                        <div class="card-body row g-3 align-items-end">
-                                            <div class="col-md-10">
-                                                <label class="form-label">Freelancer Code</label>
-                                                <input type="text" class="form-control" name="freelancer_codes[${index}]" placeholder="Enter freelancer code">
-                                            </div>
-                                            <div class="col-md-2 d-flex justify-content-end">
-                                                <button type="button" class="btn btn-outline-danger remove-freelancer">
-                                                    <i class="ti ti-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    `;
+                        <div class="card-body row g-3 align-items-end">
+                            <div class="col-md-10">
+                                <label class="form-label">Freelancer Code</label>
+                                <input type="text" class="form-control" name="freelancer_codes[${index}]" placeholder="Enter freelancer code">
+                            </div>
+                            <div class="col-md-2 d-flex justify-content-end">
+                                <button type="button" class="btn btn-outline-danger remove-freelancer">
+                                    <i class="ti ti-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
                     freelancerContainer.appendChild(wrapper);
                 });
 
@@ -292,6 +306,57 @@
                         }
                     }
                 });
+
+                // Reference Task Validation
+                const referenceTaskInput = document.getElementById('reference_number');
+                const viewReferenceTaskBtn = document.getElementById('viewReferenceTaskBtn');
+                const referenceTaskError = document.getElementById('referenceTaskError');
+
+                viewReferenceTaskBtn?.addEventListener('click', function() {
+                    const taskNumber = referenceTaskInput.value.trim();
+
+                    if (!taskNumber) {
+                        referenceTaskError.textContent = 'Please enter a task number.';
+                        referenceTaskError.classList.remove('d-none');
+                        return;
+                    }
+
+                    // Disable button while searching
+                    viewReferenceTaskBtn.disabled = true;
+                    viewReferenceTaskBtn.innerHTML = '<i class="ti ti-loader-2"></i>';
+
+                    // Try to find task by number
+                    fetch(`{{ route('dashboard.tasks.find-task') }}?task_number=${encodeURIComponent(taskNumber)}`, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.found) {
+                                window.location.href = data.url;
+                            } else {
+                                showTaskNotFound(data.message || 'Task with this number not found.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showTaskNotFound('An error occurred while searching. Please try again.');
+                        })
+                        .finally(() => {
+                            viewReferenceTaskBtn.disabled = false;
+                            viewReferenceTaskBtn.innerHTML = '<i class="ti ti-external-link"></i>';
+                        });
+                });
+
+                function showTaskNotFound(message) {
+                    referenceTaskError.textContent = message || 'Task with this number not found.';
+                    referenceTaskError.classList.remove('d-none');
+                    setTimeout(() => {
+                        referenceTaskError.classList.add('d-none');
+                    }, 5000);
+                }
             });
         </script>
     @endonce
