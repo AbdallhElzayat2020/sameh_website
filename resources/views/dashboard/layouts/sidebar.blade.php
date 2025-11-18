@@ -55,6 +55,13 @@
             </a>
         </li>
 
+        <li class="menu-item {{ request()->routeIs('dashboard.finance.*') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.finance.invoices') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-wallet"></i>
+                <div data-i18n="Finance">Finance</div>
+            </a>
+        </li>
+
         <li class="menu-item {{ request()->routeIs('dashboard.industries.*') ? 'active' : '' }}">
             <a href="{{ route('dashboard.industries.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-building"></i>

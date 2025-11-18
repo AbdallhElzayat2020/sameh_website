@@ -1,13 +1,17 @@
 <?php
 
 use App\Http\Controllers\Dashboard\ClientController;
+use App\Http\Controllers\Dashboard\CompanyCapitalController;
 use App\Http\Controllers\Dashboard\ContactMessageController;
+use App\Http\Controllers\Dashboard\ExpenseController;
+use App\Http\Controllers\Dashboard\FinanceController;
 use App\Http\Controllers\Dashboard\FreelancerController;
 use App\Http\Controllers\Dashboard\HomeController;
 use App\Http\Controllers\Dashboard\IndustryController;
 use App\Http\Controllers\Dashboard\IosImageController;
 use App\Http\Controllers\Dashboard\PermissionController;
 use App\Http\Controllers\Dashboard\ProjectRequestController;
+use App\Http\Controllers\Dashboard\RevenueController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\TaskController;
@@ -18,6 +22,27 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('dashboard')->middleware('auth')->as('dashboard.')->group(function () {
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    Route::prefix('finance')->as('finance.')->group(function () {
+        Route::get('/', [FinanceController::class, 'index'])->name('index');
+        Route::get('/invoices', [FinanceController::class, 'invoices'])->name('invoices');
+
+        Route::resource('revenues', RevenueController::class)->except(['show']);
+        Route::post('revenues/{revenue}/sheet', [RevenueController::class, 'uploadSheet'])
+            ->name('revenues.sheet.store');
+        Route::get('revenues/{revenue}/sheet', [RevenueController::class, 'downloadSheet'])
+            ->name('revenues.sheet.download');
+
+        Route::resource('expenses', ExpenseController::class)->except(['show']);
+        Route::post('expenses/{expense}/sheet', [ExpenseController::class, 'uploadSheet'])
+            ->name('expenses.sheet.store');
+        Route::get('expenses/{expense}/sheet', [ExpenseController::class, 'downloadSheet'])
+            ->name('expenses.sheet.download');
+
+        Route::get('company-capital', [CompanyCapitalController::class, 'index'])->name('company-capital.index');
+        Route::get('company-capital/edit', [CompanyCapitalController::class, 'edit'])->name('company-capital.edit');
+        Route::put('company-capital', [CompanyCapitalController::class, 'update'])->name('company-capital.update');
+    });
 
     // Users Routes
     Route::resource('/users', UserController::class);
