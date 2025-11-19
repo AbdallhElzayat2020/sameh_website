@@ -37,8 +37,9 @@ class FreelancerController extends Controller
     public function create()
     {
         $services = Service::query()->orderBy('name')->get(['id', 'name']);
+        $f_code = Freelancer::nextFreelancerCode();
 
-        return view('dashboard.freelancers.create', compact('services'));
+        return view('dashboard.freelancers.create', compact('services', 'f_code'));
     }
 
     public function store(FreelancerRequest $request)

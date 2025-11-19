@@ -19,7 +19,8 @@
     <div class="col-md-6">
         <label for="freelancer_code" class="form-label">Freelancer Code</label>
         <input type="text" class="form-control" id="freelancer_code" name="freelancer_code"
-            value="{{ old('freelancer_code', $freelancer->freelancer_code ?? '') }}" required>
+               readonly
+            value="{{ old('freelancer_code', $f_code ?? $freelancer->freelancer_code ?? '') }}" required>
     </div>
     <div class="col-md-6">
         <label for="name" class="form-label">Name</label>

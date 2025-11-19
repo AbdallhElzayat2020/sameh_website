@@ -37,7 +37,9 @@ class ClientController extends Controller
 
     public function create()
     {
-        return view('dashboard.clients.create');
+        $c_code = Client::nextClientCode();
+
+        return view('dashboard.clients.create', compact('c_code'));
     }
 
     public function store(ClientRequest $request)
