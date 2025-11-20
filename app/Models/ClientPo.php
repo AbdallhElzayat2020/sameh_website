@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class ClientPo extends Model
 {
@@ -24,9 +26,24 @@ class ClientPo extends Model
         return $this->belongsToMany(Service::class, 'client_po_service');
     }
 
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class, 'client_code', 'client_code');
+    }
+
+    public function task(): BelongsTo
+    {
+        return $this->belongsTo(Task::class, 'task_code', 'task_number');
+    }
+
     public function invoice(): HasOne
     {
         return $this->hasOne(ClientInvoice::class);
+    }
+
+    public function media(): MorphOne
+    {
+        return $this->morphOne(Media::class, 'mediaable');
     }
 
     protected function casts(): array

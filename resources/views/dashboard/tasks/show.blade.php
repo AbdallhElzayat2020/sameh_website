@@ -44,6 +44,16 @@
                         <span class="badge bg-label-secondary ms-2">{{ $task->media->count() }}</span>
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="{{ route('dashboard.tasks.vendor-pos.index', $task) }}">
+                        Vendor PO
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="{{ route('dashboard.tasks.client-pos.index', $task) }}">
+                        Client PO
+                    </a>
+                </li>
             </ul>
 
             <!-- Tabs Content -->

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dashboard\ClientController;
+use App\Http\Controllers\Dashboard\ClientPoController;
 use App\Http\Controllers\Dashboard\CompanyCapitalController;
 use App\Http\Controllers\Dashboard\ContactMessageController;
 use App\Http\Controllers\Dashboard\ExpenseController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\TaskController;
 use App\Http\Controllers\Dashboard\TestimonialController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\VendorPoController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('dashboard')->middleware('auth')->as('dashboard.')->group(function () {
@@ -89,6 +91,18 @@ Route::prefix('dashboard')->middleware('auth')->as('dashboard.')->group(function
     Route::delete('/tasks/{task}/attachments/{media}', [TaskController::class, 'destroyAttachment'])
         ->name('tasks.attachments.destroy');
     Route::resource('/tasks', TaskController::class);
+
+    Route::prefix('/tasks/{task}')->name('tasks.')->scopeBindings()->group(function () {
+        Route::get('vendor-pos', [VendorPoController::class, 'index'])->name('vendor-pos.index');
+        Route::get('vendor-pos/create', [VendorPoController::class, 'create'])->name('vendor-pos.create');
+        Route::post('vendor-pos', [VendorPoController::class, 'store'])->name('vendor-pos.store');
+        Route::get('vendor-pos/{vendorPo}/download', [VendorPoController::class, 'download'])->name('vendor-pos.download');
+
+        Route::get('client-pos', [ClientPoController::class, 'index'])->name('client-pos.index');
+        Route::get('client-pos/create', [ClientPoController::class, 'create'])->name('client-pos.create');
+        Route::post('client-pos', [ClientPoController::class, 'store'])->name('client-pos.store');
+        Route::get('client-pos/{clientPo}/download', [ClientPoController::class, 'download'])->name('client-pos.download');
+    });
 
     // Testimonials Routes
     Route::resource('/testimonials', TestimonialController::class)->except(['show']);
