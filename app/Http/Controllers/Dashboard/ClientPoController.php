@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClientPoRequest;
+use App\Models\ClientInvoice;
 use App\Models\ClientPo;
 use App\Models\Service;
 use App\Models\Task;
@@ -55,6 +56,12 @@ class ClientPoController extends Controller
             $clientPo->services()->sync($validated['service_ids'] ?? []);
 
             $this->storePoMedia($clientPo, $request->file('po_file'), $validated['note'] ?? null, 'client-pos');
+
+            // Auto-create invoice
+            ClientInvoice::create([
+                'client_po_id' => $clientPo->id,
+                'status' => 'pending',
+            ]);
         });
 
         return redirect()

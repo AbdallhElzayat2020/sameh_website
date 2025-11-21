@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VendorPoRequest;
+use App\Models\FreelancerInvoice;
 use App\Models\FreelancerPo;
 use App\Models\Service;
 use App\Models\Task;
@@ -58,6 +59,12 @@ class VendorPoController extends Controller
             $vendorPo->services()->sync($validated['service_ids'] ?? []);
 
             $this->storePoMedia($vendorPo, $request->file('po_file'), $validated['note'] ?? null, 'vendor-pos');
+
+            // Auto-create invoice
+            FreelancerInvoice::create([
+                'freelancer_po_id' => $vendorPo->id,
+                'status' => 'pending',
+            ]);
         });
 
         return redirect()

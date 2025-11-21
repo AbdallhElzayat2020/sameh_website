@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dashboard\ClientController;
+use App\Http\Controllers\Dashboard\ClientInvoiceController;
 use App\Http\Controllers\Dashboard\ClientPoController;
 use App\Http\Controllers\Dashboard\CompanyCapitalController;
 use App\Http\Controllers\Dashboard\ContactMessageController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\TaskController;
 use App\Http\Controllers\Dashboard\TestimonialController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\VendorInvoiceController;
 use App\Http\Controllers\Dashboard\VendorPoController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +30,16 @@ Route::prefix('dashboard')->middleware('auth')->as('dashboard.')->group(function
     Route::prefix('finance')->as('finance.')->group(function () {
         Route::get('/', [FinanceController::class, 'index'])->name('index');
         Route::get('/invoices', [FinanceController::class, 'invoices'])->name('invoices');
+
+        Route::prefix('invoices')->name('invoices.')->group(function () {
+            Route::get('vendor-invoices', [VendorInvoiceController::class, 'index'])->name('vendor-invoices');
+            Route::patch('vendor-invoices/{vendorInvoice}', [VendorInvoiceController::class, 'update'])->name('vendor-invoices.update');
+            Route::get('vendor-invoices/{vendorInvoice}/download-po', [VendorInvoiceController::class, 'downloadPo'])->name('vendor-invoices.download-po');
+
+            Route::get('client-invoices', [ClientInvoiceController::class, 'index'])->name('client-invoices');
+            Route::patch('client-invoices/{clientInvoice}', [ClientInvoiceController::class, 'update'])->name('client-invoices.update');
+            Route::get('client-invoices/{clientInvoice}/download-po', [ClientInvoiceController::class, 'downloadPo'])->name('client-invoices.download-po');
+        });
 
         Route::resource('revenues', RevenueController::class)->except(['show']);
         Route::post('revenues/{revenue}/sheet', [RevenueController::class, 'uploadSheet'])
