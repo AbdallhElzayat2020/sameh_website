@@ -20,89 +20,113 @@
             </a>
         </li>
 
-        <li class="menu-item {{ request()->routeIs('dashboard.users.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.users.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-user"></i>
-                <div data-i18n="Users">Users</div>
-            </a>
-        </li>
+        @can('View User')
+            <li class="menu-item {{ request()->routeIs('dashboard.users.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.users.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-user"></i>
+                    <div data-i18n="Users">Users</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.roles.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.roles.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-users"></i>
-                <div data-i18n="Roles">Roles</div>
-            </a>
-        </li>
+        @can('View Role')
+            <li class="menu-item {{ request()->routeIs('dashboard.roles.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.roles.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-users"></i>
+                    <div data-i18n="Roles">Roles</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.permissions.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.permissions.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-shield-check"></i>
-                <div data-i18n="Permissions">Permissions</div>
-            </a>
-        </li>
+        @can('View Permission')
+            <li class="menu-item {{ request()->routeIs('dashboard.permissions.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.permissions.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-shield-check"></i>
+                    <div data-i18n="Permissions">Permissions</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.clients.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.clients.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-address-book"></i>
-                <div data-i18n="Clients">Clients</div>
-            </a>
-        </li>
+        @can('View Client')
+            <li class="menu-item {{ request()->routeIs('dashboard.clients.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.clients.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-address-book"></i>
+                    <div data-i18n="Clients">Clients</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.services.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.services.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-briefcase"></i>
-                <div data-i18n="Services">Services</div>
-            </a>
-        </li>
+        @can('View Service')
+            <li class="menu-item {{ request()->routeIs('dashboard.services.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.services.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-briefcase"></i>
+                    <div data-i18n="Services">Services</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.finance.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.finance.invoices') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-wallet"></i>
-                <div data-i18n="Finance">Finance</div>
-            </a>
-        </li>
+        @can('View Finance')
+            <li class="menu-item {{ request()->routeIs('dashboard.finance.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.finance.invoices') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-wallet"></i>
+                    <div data-i18n="Finance">Finance</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.industries.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.industries.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-building"></i>
-                <div data-i18n="Industries">Industries</div>
-            </a>
-        </li>
+        @can('View Industry')
+            <li class="menu-item {{ request()->routeIs('dashboard.industries.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.industries.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-building"></i>
+                    <div data-i18n="Industries">Industries</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.contact-messages.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.contact-messages.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-mail"></i>
-                <div data-i18n="Contact Messages">Contact Messages</div>
-            </a>
-        </li>
+        @can('View Contact Message')
+            <li class="menu-item {{ request()->routeIs('dashboard.contact-messages.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.contact-messages.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-mail"></i>
+                    <div data-i18n="Contact Messages">Contact Messages</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.ios-images.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.ios-images.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-photo"></i>
-                <div data-i18n="iOS Images">iOS Images</div>
-            </a>
-        </li>
+        @can('View IOS Image')
+            <li class="menu-item {{ request()->routeIs('dashboard.ios-images.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.ios-images.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-photo"></i>
+                    <div data-i18n="iOS Images">iOS Images</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.freelancers.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.freelancers.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-users"></i>
-                <div data-i18n="Freelancers">Freelancers</div>
-            </a>
-        </li>
+        @can('View Freelancer')
+            <li class="menu-item {{ request()->routeIs('dashboard.freelancers.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.freelancers.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-users"></i>
+                    <div data-i18n="Freelancers">Freelancers</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.project-requests.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.project-requests.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-file-dollar"></i>
-                <div data-i18n="Project Requests">Price Requests</div>
-            </a>
-        </li>
+        @can('View Project Request')
+            <li class="menu-item {{ request()->routeIs('dashboard.project-requests.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.project-requests.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-file-dollar"></i>
+                    <div data-i18n="Project Requests">Price Requests</div>
+                </a>
+            </li>
+        @endcan
 
-        <li class="menu-item {{ request()->routeIs('dashboard.tasks.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.tasks.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-checklist"></i>
-                <div data-i18n="Tasks">Tasks</div>
-            </a>
-        </li>
+        @can('View Task')
+            <li class="menu-item {{ request()->routeIs('dashboard.tasks.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.tasks.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-checklist"></i>
+                    <div data-i18n="Tasks">Tasks</div>
+                </a>
+            </li>
+        @endcan
 
 
 

@@ -16,19 +16,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // إنشاء حساب Admin مع الصلاحيات
         $this->call([
             SystemPermissionSeeder::class,
             AdminSeeder::class,
         ]);
 
-        //        $role = Role::factory()
-        //            ->hasPermissions(4)
-        //            ->create();
-        //
-        //        User::factory()->create([
-        //            'role_id' => $role->id,
-        //            'status' => 'active',
-        //        ]);
+        $role = Role::factory()
+            ->hasPermissions(4)
+            ->create();
+
+        User::factory()->create([
+            'role_id' => $role->id,
+            'status' => 'active',
+        ]);
     }
 }
