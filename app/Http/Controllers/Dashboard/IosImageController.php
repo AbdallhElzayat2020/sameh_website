@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\IosImageRequest;
 use App\Models\IosImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -13,6 +14,8 @@ class IosImageController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('View IOS Image');
+
         $images = IosImage::query()
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = '%' . (string) $request->string('search')->trim() . '%';
@@ -27,11 +30,15 @@ class IosImageController extends Controller
 
     public function create()
     {
+        Gate::authorize('Create IOS Image');
+
         return view('dashboard.ios-images.create');
     }
 
     public function store(IosImageRequest $request)
     {
+        Gate::authorize('Create IOS Image');
+
         IosImage::create($this->mappedData($request));
 
         return redirect()
@@ -41,11 +48,15 @@ class IosImageController extends Controller
 
     public function edit(IosImage $iosImage)
     {
+        Gate::authorize('Update IOS Image');
+
         return view('dashboard.ios-images.edit', compact('iosImage'));
     }
 
     public function update(IosImageRequest $request, IosImage $iosImage)
     {
+        Gate::authorize('Update IOS Image');
+
         if ($request->hasFile('image')) {
             $this->deleteImage($iosImage);
         }
@@ -59,6 +70,8 @@ class IosImageController extends Controller
 
     public function destroy(IosImage $iosImage)
     {
+        Gate::authorize('Delete IOS Image');
+
         $this->deleteImage($iosImage);
         $iosImage->delete();
 

@@ -7,12 +7,15 @@ use App\Http\Requests\UpdateInvoiceStatusRequest;
 use App\Models\FreelancerInvoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class VendorInvoiceController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('View Vendor Invoice');
+
         $query = FreelancerInvoice::query()
             ->with(['freelancerPo.freelancer', 'freelancerPo.task', 'freelancerPo.services', 'freelancerPo.media']);
 
@@ -42,6 +45,8 @@ class VendorInvoiceController extends Controller
 
     public function update(UpdateInvoiceStatusRequest $request, FreelancerInvoice $vendorInvoice)
     {
+        Gate::authorize('Update Vendor Invoice');
+
         if ($vendorInvoice->status === 'completed' && ! Auth::user()->isAdministrator()) {
             abort(403, 'Only administrators can edit completed invoices.');
         }
@@ -59,6 +64,8 @@ class VendorInvoiceController extends Controller
 
     public function downloadPo(FreelancerInvoice $vendorInvoice)
     {
+        Gate::authorize('Download Vendor Invoice PO');
+
         $po = $vendorInvoice->freelancerPo;
         $media = $po->media;
 

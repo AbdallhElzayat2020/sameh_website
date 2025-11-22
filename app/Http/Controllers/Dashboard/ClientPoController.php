@@ -10,6 +10,7 @@ use App\Models\Service;
 use App\Models\Task;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -17,6 +18,8 @@ class ClientPoController extends Controller
 {
     public function index(Task $task)
     {
+        Gate::authorize('View Client PO');
+
         $clientPos = ClientPo::query()
             ->with(['media', 'services', 'client', 'task'])
             ->where('task_code', $task->task_number)
@@ -29,6 +32,8 @@ class ClientPoController extends Controller
 
     public function create(Task $task)
     {
+        Gate::authorize('Create Client PO');
+
         $services = Service::query()
             ->where('status', 'active')
             ->orderBy('name')
@@ -39,6 +44,8 @@ class ClientPoController extends Controller
 
     public function store(ClientPoRequest $request, Task $task)
     {
+        Gate::authorize('Create Client PO');
+
         $validated = $request->validated();
 
         DB::transaction(function () use ($validated, $task, $request) {
@@ -71,6 +78,8 @@ class ClientPoController extends Controller
 
     public function download(Task $task, ClientPo $clientPo)
     {
+        Gate::authorize('Download Client PO');
+
         abort_unless($clientPo->task_code === $task->task_number, 404);
 
         $media = $clientPo->media;

@@ -22,10 +22,12 @@
                             <a href="{{ route('dashboard.clients.index') }}" class="btn btn-link">Reset</a>
                         @endif
                     </form>
-                    <a href="{{ route('dashboard.clients.create') }}" class="btn btn-primary px-3">
-                        <i class="ti ti-plus me-1"></i>
-                        New Client
-                    </a>
+                    @can('Create Client')
+                        <a href="{{ route('dashboard.clients.create') }}" class="btn btn-primary px-3">
+                            <i class="ti ti-plus me-1"></i>
+                            New Client
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -43,6 +45,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $canUpdateClient = Gate::allows('Update Client');
+                        $canDeleteClient = Gate::allows('Delete Client');
+                    @endphp
                     @forelse ($clients as $client)
                         <tr>
                             <td class="fw-semibold">
@@ -62,18 +68,22 @@
                             <td>{{ $client->currency ?? '-' }}</td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('dashboard.clients.edit', $client) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        Edit
-                                    </a>
-                                    <form method="POST" action="{{ route('dashboard.clients.destroy', $client) }}"
-                                        onsubmit="return confirm('Delete this client?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    @if($canUpdateClient)
+                                        <a href="{{ route('dashboard.clients.edit', $client) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    @endif
+                                    @if($canDeleteClient)
+                                        <form method="POST" action="{{ route('dashboard.clients.destroy', $client) }}"
+                                            onsubmit="return confirm('Delete this client?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

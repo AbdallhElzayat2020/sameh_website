@@ -7,10 +7,12 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">قائمة الأدوار</h5>
-                    <a href="{{ route('dashboard.roles.create') }}" class="btn btn-primary">
-                        <i class="ti ti-plus me-1"></i>
-                        إضافة دور جديد
-                    </a>
+                    @can('Create Role')
+                        <a href="{{ route('dashboard.roles.create') }}" class="btn btn-primary">
+                            <i class="ti ti-plus me-1"></i>
+                            إضافة دور جديد
+                        </a>
+                    @endcan
                 </div>
                 <div class="card-body">
                     @if(session('success'))
@@ -32,6 +34,10 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $canUpdateRole = Gate::allows('Update Role');
+                                    $canDeleteRole = Gate::allows('Delete Role');
+                                @endphp
                                 @forelse($roles as $role)
                                     <tr>
                                         <td>{{ $role->id }}</td>
@@ -54,19 +60,23 @@
                                         <td>{{ $role->created_at->format('Y-m-d') }}</td>
                                         <td>
                                             <div class="d-inline-block">
-                                                <a href="{{ route('dashboard.roles.edit', $role) }}"
-                                                    class="btn btn-sm btn-icon btn-label-primary">
-                                                    <i class="ti ti-edit"></i>
-                                                </a>
-                                                <form action="{{ route('dashboard.roles.destroy', $role) }}" method="POST"
-                                                    class="d-inline-block"
-                                                    onsubmit="return confirm('هل أنت متأكد من حذف هذا الدور؟')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-icon btn-label-danger">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </form>
+                                                @if($canUpdateRole)
+                                                    <a href="{{ route('dashboard.roles.edit', $role) }}"
+                                                        class="btn btn-sm btn-icon btn-label-primary">
+                                                        <i class="ti ti-edit"></i>
+                                                    </a>
+                                                @endif
+                                                @if($canDeleteRole)
+                                                    <form action="{{ route('dashboard.roles.destroy', $role) }}" method="POST"
+                                                        class="d-inline-block"
+                                                        onsubmit="return confirm('هل أنت متأكد من حذف هذا الدور؟')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-icon btn-label-danger">
+                                                            <i class="ti ti-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

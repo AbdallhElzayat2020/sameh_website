@@ -27,10 +27,12 @@
                             <a href="{{ route('dashboard.industries.index') }}" class="btn btn-link">Reset</a>
                         @endif
                     </form>
-                    <a href="{{ route('dashboard.industries.create') }}" class="btn btn-primary px-3">
-                        <i class="ti ti-plus me-1"></i>
-                        New Industry
-                    </a>
+                    @can('Create Industry')
+                        <a href="{{ route('dashboard.industries.create') }}" class="btn btn-primary px-3">
+                            <i class="ti ti-plus me-1"></i>
+                            New Industry
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -44,6 +46,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $canUpdateIndustry = Gate::allows('Update Industry');
+                        $canDeleteIndustry = Gate::allows('Delete Industry');
+                    @endphp
                     @forelse ($industries as $industry)
                         <tr>
                             <td>
@@ -61,18 +67,22 @@
                             </td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('dashboard.industries.edit', $industry) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        Edit
-                                    </a>
-                                    <form method="POST" action="{{ route('dashboard.industries.destroy', $industry) }}"
-                                        onsubmit="return confirm('Delete this industry?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    @if($canUpdateIndustry)
+                                        <a href="{{ route('dashboard.industries.edit', $industry) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    @endif
+                                    @if($canDeleteIndustry)
+                                        <form method="POST" action="{{ route('dashboard.industries.destroy', $industry) }}"
+                                            onsubmit="return confirm('Delete this industry?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

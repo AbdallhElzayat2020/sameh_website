@@ -9,6 +9,7 @@ use App\Models\Expense;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -17,6 +18,8 @@ class ExpenseController extends Controller
 {
     public function index(): View
     {
+        Gate::authorize('View Expense');
+
         $expenses = Expense::query()
             ->latest('month')
             ->paginate(12);
@@ -26,11 +29,15 @@ class ExpenseController extends Controller
 
     public function create(): View
     {
+        Gate::authorize('Create Expense');
+
         return view('dashboard.finance.expenses.create');
     }
 
     public function store(ExpenseRequest $request): RedirectResponse
     {
+        Gate::authorize('Create Expense');
+
         $expense = Expense::create($this->preparePayload($request));
 
         if ($request->hasFile('sheet')) {
@@ -44,11 +51,15 @@ class ExpenseController extends Controller
 
     public function edit(Expense $expense): View
     {
+        Gate::authorize('Update Expense');
+
         return view('dashboard.finance.expenses.edit', compact('expense'));
     }
 
     public function update(ExpenseRequest $request, Expense $expense): RedirectResponse
     {
+        Gate::authorize('Update Expense');
+
         $expense->update($this->preparePayload($request));
 
         if ($request->hasFile('sheet')) {
@@ -62,6 +73,8 @@ class ExpenseController extends Controller
 
     public function destroy(Expense $expense): RedirectResponse
     {
+        Gate::authorize('Delete Expense');
+
         $this->deleteSheet($expense);
 
         $expense->delete();
@@ -73,6 +86,8 @@ class ExpenseController extends Controller
 
     public function uploadSheet(FinanceSheetRequest $request, Expense $expense): RedirectResponse
     {
+        Gate::authorize('Upload Expense Sheet');
+
         $this->storeSheet($expense, $request->file('sheet'));
 
         return redirect()
@@ -82,6 +97,8 @@ class ExpenseController extends Controller
 
     public function downloadSheet(Expense $expense)
     {
+        Gate::authorize('Download Expense Sheet');
+
         $sheet = $expense->sheet;
 
         abort_if(! $sheet, 404);

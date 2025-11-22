@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -13,6 +14,8 @@ class ServiceController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('View Service');
+
         $services = Service::query()
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = '%' . (string) $request->string('search')->trim() . '%';
@@ -27,11 +30,15 @@ class ServiceController extends Controller
 
     public function create()
     {
+        Gate::authorize('Create Service');
+
         return view('dashboard.services.create');
     }
 
     public function store(ServiceRequest $request)
     {
+        Gate::authorize('Create Service');
+
         $data = $request->safe()->only(['name', 'description', 'status']);
 
         if ($request->hasFile('icon')) {
@@ -49,16 +56,22 @@ class ServiceController extends Controller
 
     public function show(Service $service)
     {
+        Gate::authorize('View Service');
+
         return view('dashboard.services.show', compact('service'));
     }
 
     public function edit(Service $service)
     {
+        Gate::authorize('Update Service');
+
         return view('dashboard.services.edit', compact('service'));
     }
 
     public function update(ServiceRequest $request, Service $service)
     {
+        Gate::authorize('Update Service');
+
         $data = $request->safe()->only(['name', 'description', 'status']);
 
         if ($request->hasFile('icon')) {
@@ -77,6 +90,8 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
+        Gate::authorize('Delete Service');
+
         $this->deleteIcon($service);
         $service->delete();
 

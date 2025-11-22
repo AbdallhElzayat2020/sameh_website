@@ -23,10 +23,12 @@
                             <a href="{{ route('dashboard.freelancers.index') }}" class="btn btn-link">Reset</a>
                         @endif
                     </form>
-                    <a href="{{ route('dashboard.freelancers.create') }}" class="btn btn-primary px-3">
-                        <i class="ti ti-plus me-1"></i>
-                        New Freelancer
-                    </a>
+                    @can('Create Freelancer')
+                        <a href="{{ route('dashboard.freelancers.create') }}" class="btn btn-primary px-3">
+                            <i class="ti ti-plus me-1"></i>
+                            New Freelancer
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -44,6 +46,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $canUpdateFreelancer = Gate::allows('Update Freelancer');
+                        $canDeleteFreelancer = Gate::allows('Delete Freelancer');
+                    @endphp
                     @forelse ($freelancers as $freelancer)
                         <tr>
                             <td class="fw-semibold">
@@ -70,18 +76,22 @@
                             <td>{{ $freelancer->price_hr }} {{ $freelancer->currency }}</td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('dashboard.freelancers.edit', $freelancer) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        Edit
-                                    </a>
-                                    <form method="POST" action="{{ route('dashboard.freelancers.destroy', $freelancer) }}"
-                                        onsubmit="return confirm('Delete this freelancer?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    @if($canUpdateFreelancer)
+                                        <a href="{{ route('dashboard.freelancers.edit', $freelancer) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    @endif
+                                    @if($canDeleteFreelancer)
+                                        <form method="POST" action="{{ route('dashboard.freelancers.destroy', $freelancer) }}"
+                                            onsubmit="return confirm('Delete this freelancer?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

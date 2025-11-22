@@ -11,6 +11,7 @@ use App\Models\Task;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -18,6 +19,8 @@ class VendorPoController extends Controller
 {
     public function index(Task $task)
     {
+        Gate::authorize('View Vendor PO');
+
         $vendorPos = FreelancerPo::query()
             ->with(['media', 'services', 'freelancer'])
             ->where('task_code', $task->task_number)
@@ -30,6 +33,8 @@ class VendorPoController extends Controller
 
     public function create(Task $task)
     {
+        Gate::authorize('Create Vendor PO');
+
         $services = Service::query()
             ->where('status', 'active')
             ->orderBy('name')
@@ -40,6 +45,8 @@ class VendorPoController extends Controller
 
     public function store(VendorPoRequest $request, Task $task)
     {
+        Gate::authorize('Create Vendor PO');
+
         $validated = $request->validated();
 
         DB::transaction(function () use ($validated, $task, $request) {
@@ -74,6 +81,8 @@ class VendorPoController extends Controller
 
     public function download(Task $task, FreelancerPo $vendorPo)
     {
+        Gate::authorize('Download Vendor PO');
+
         abort_unless($vendorPo->task_code === $task->task_number, 404);
 
         $media = $vendorPo->media;

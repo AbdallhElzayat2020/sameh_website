@@ -7,6 +7,7 @@ use App\Models\Media;
 use App\Models\ProjectRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -14,6 +15,8 @@ class ProjectRequestController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('View Project Request');
+
         $projectRequests = ProjectRequest::query()
             ->with('services')
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')))
@@ -37,6 +40,8 @@ class ProjectRequestController extends Controller
 
     public function show(ProjectRequest $projectRequest)
     {
+        Gate::authorize('View Project Request');
+
         $projectRequest->load(['services', 'media']);
 
         return view('dashboard.project-requests.show', compact('projectRequest'));
@@ -44,6 +49,8 @@ class ProjectRequestController extends Controller
 
     public function downloadAttachment(ProjectRequest $projectRequest, Media $media)
     {
+        Gate::authorize('Download Project Request Attachment');
+
         abort_if(
             $media->mediaable_type !== ProjectRequest::class || $media->mediaable_id !== $projectRequest->id,
             404
@@ -57,6 +64,8 @@ class ProjectRequestController extends Controller
 
     public function destroyAttachment(ProjectRequest $projectRequest, Media $media)
     {
+        Gate::authorize('Delete Project Request Attachment');
+
         abort_if(
             $media->mediaable_type !== ProjectRequest::class || $media->mediaable_id !== $projectRequest->id,
             404
@@ -77,6 +86,8 @@ class ProjectRequestController extends Controller
 
     public function updateStatus(Request $request, ProjectRequest $projectRequest)
     {
+        Gate::authorize('Update Project Request Status');
+
         $validated = $request->validate([
             'status' => ['required', 'in:pending,in_progress,completed'],
         ]);
@@ -92,6 +103,8 @@ class ProjectRequestController extends Controller
 
     public function storeAttachment(Request $request, ProjectRequest $projectRequest)
     {
+        Gate::authorize('Store Project Request Attachment');
+
         $validated = $request->validate([
             'file_name' => ['required', 'string', 'max:255'],
             'file_status' => ['required', 'in:DTP,Update'],
@@ -139,6 +152,8 @@ class ProjectRequestController extends Controller
 
     public function destroy(ProjectRequest $projectRequest)
     {
+        Gate::authorize('Delete Project Request');
+
         DB::transaction(function () use ($projectRequest) {
             $disk = Storage::disk('uploads');
 

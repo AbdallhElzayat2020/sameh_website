@@ -7,6 +7,7 @@ use App\Http\Requests\IndustryRequest;
 use App\Models\Industry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Throwable;
@@ -15,6 +16,8 @@ class IndustryController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('View Industry');
+
         $industries = Industry::query()
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = '%' . (string) $request->string('search')->trim() . '%';
@@ -29,11 +32,15 @@ class IndustryController extends Controller
 
     public function create()
     {
+        Gate::authorize('Create Industry');
+
         return view('dashboard.industries.create');
     }
 
     public function store(IndustryRequest $request)
     {
+        Gate::authorize('Create Industry');
+
         DB::beginTransaction();
 
         try {
@@ -58,6 +65,8 @@ class IndustryController extends Controller
 
     public function show(Industry $industry)
     {
+        Gate::authorize('View Industry');
+
         $industry->load('media');
 
         return view('dashboard.industries.show', compact('industry'));
@@ -65,6 +74,8 @@ class IndustryController extends Controller
 
     public function edit(Industry $industry)
     {
+        Gate::authorize('Update Industry');
+
         $industry->load('media');
 
         return view('dashboard.industries.edit', compact('industry'));
@@ -72,6 +83,8 @@ class IndustryController extends Controller
 
     public function update(IndustryRequest $request, Industry $industry)
     {
+        Gate::authorize('Update Industry');
+
         DB::beginTransaction();
 
         try {
@@ -100,6 +113,8 @@ class IndustryController extends Controller
 
     public function destroy(Industry $industry)
     {
+        Gate::authorize('Delete Industry');
+
         $this->deleteImage($industry);
         $industry->delete();
 

@@ -7,12 +7,15 @@ use App\Http\Requests\UpdateInvoiceStatusRequest;
 use App\Models\ClientInvoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class ClientInvoiceController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('View Client Invoice');
+
         $query = ClientInvoice::query()
             ->with(['clientPo.client', 'clientPo.task', 'clientPo.services', 'clientPo.media']);
 
@@ -42,6 +45,8 @@ class ClientInvoiceController extends Controller
 
     public function update(UpdateInvoiceStatusRequest $request, ClientInvoice $clientInvoice)
     {
+        Gate::authorize('Update Client Invoice');
+
         if ($clientInvoice->status === 'completed' && ! Auth::user()->isAdministrator()) {
             abort(403, 'Only administrators can edit completed invoices.');
         }
@@ -59,6 +64,8 @@ class ClientInvoiceController extends Controller
 
     public function downloadPo(ClientInvoice $clientInvoice)
     {
+        Gate::authorize('Download Client Invoice PO');
+
         $po = $clientInvoice->clientPo;
         $media = $po->media;
 

@@ -31,10 +31,12 @@
                             <a href="{{ route('dashboard.tasks.index') }}" class="btn btn-link">Reset</a>
                         @endif
                     </form>
-                    <a href="{{ route('dashboard.tasks.create') }}" class="btn btn-primary px-3">
-                        <i class="ti ti-plus me-1"></i>
-                        New Task
-                    </a>
+                    @can('Create Task')
+                        <a href="{{ route('dashboard.tasks.create') }}" class="btn btn-primary px-3">
+                            <i class="ti ti-plus me-1"></i>
+                            New Task
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -54,6 +56,11 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $canViewTask = Gate::allows('View Task');
+                        $canUpdateTask = Gate::allows('Update Task');
+                        $canDeleteTask = Gate::allows('Delete Task');
+                    @endphp
                     @forelse ($tasks as $task)
                         <tr>
                             <td class="fw-semibold">{{ $task->task_number }}</td>
@@ -119,22 +126,28 @@
                             <td>{{ $task->creator->name ?? '-' }}</td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('dashboard.tasks.show', $task) }}"
-                                        class="btn btn-sm btn-outline-info" title="View Details">
-                                        <i class="ti ti-eye"></i>
-                                    </a>
-                                    <a href="{{ route('dashboard.tasks.edit', $task) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        Edit
-                                    </a>
-                                    <form method="POST" action="{{ route('dashboard.tasks.destroy', $task) }}"
-                                        onsubmit="return confirm('Delete this task?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    @if($canViewTask)
+                                        <a href="{{ route('dashboard.tasks.show', $task) }}"
+                                            class="btn btn-sm btn-outline-info" title="View Details">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                    @endif
+                                    @if($canUpdateTask)
+                                        <a href="{{ route('dashboard.tasks.edit', $task) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    @endif
+                                    @if($canDeleteTask)
+                                        <form method="POST" action="{{ route('dashboard.tasks.destroy', $task) }}"
+                                            onsubmit="return confirm('Delete this task?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
