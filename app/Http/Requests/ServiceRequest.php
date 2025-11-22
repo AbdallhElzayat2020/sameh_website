@@ -23,6 +23,12 @@ class ServiceRequest extends FormRequest
                 'max:255',
                 Rule::unique('services', 'name')->ignore($serviceId),
             ],
+            'icon' => [
+                $serviceId ? 'nullable' : 'required',
+                'image',
+                'mimes:jpeg,png,jpg,gif,webp',
+                'max:3000',
+            ],
             'description' => ['nullable', 'string'],
             'status' => ['required', Rule::in(['active', 'inactive'])],
         ];

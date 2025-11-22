@@ -16,7 +16,6 @@ class IndustryController extends Controller
     public function index(Request $request)
     {
         $industries = Industry::query()
-            ->withCount('industryOptions')
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = '%' . (string) $request->string('search')->trim() . '%';
                 $query->where('name', 'like', $term);
@@ -40,7 +39,6 @@ class IndustryController extends Controller
         try {
             $industry = Industry::create($request->safe()->only(['name', 'description']));
 
-            $this->syncOptions($industry, $request->validated()['options'] ?? []);
             $this->storeImage($request, $industry);
 
             DB::commit();
@@ -60,14 +58,14 @@ class IndustryController extends Controller
 
     public function show(Industry $industry)
     {
-        $industry->load(['industryOptions', 'media']);
+        $industry->load('media');
 
         return view('dashboard.industries.show', compact('industry'));
     }
 
     public function edit(Industry $industry)
     {
-        $industry->load(['industryOptions', 'media']);
+        $industry->load('media');
 
         return view('dashboard.industries.edit', compact('industry'));
     }
@@ -78,8 +76,6 @@ class IndustryController extends Controller
 
         try {
             $industry->update($request->safe()->only(['name', 'description']));
-
-            $this->syncOptions($industry, $request->validated()['options'] ?? []);
 
             // Check if image file was uploaded using Request instance
             $baseRequest = request();
@@ -105,50 +101,11 @@ class IndustryController extends Controller
     public function destroy(Industry $industry)
     {
         $this->deleteImage($industry);
-        $industry->industryOptions()->delete();
         $industry->delete();
 
         return redirect()
             ->route('dashboard.industries.index')
             ->with('success', 'Industry deleted successfully.');
-    }
-
-    protected function syncOptions(Industry $industry, array $options): void
-    {
-        $existingIds = collect($options)
-            ->pluck('id')
-            ->filter()
-            ->map(fn ($id) => (int) $id)
-            ->all();
-
-        // Delete options that are not in the submitted list
-        $industry->industryOptions()
-            ->whereNotIn('id', $existingIds)
-            ->delete();
-
-        // Update or create options
-        foreach ($options as $option) {
-            if (empty($option['name'])) {
-                continue;
-            }
-
-            $name = trim($option['name']);
-
-            if (empty($name)) {
-                continue;
-            }
-
-            if (isset($option['id']) && $option['id']) {
-                $industry->industryOptions()
-                    ->where('id', (int) $option['id'])
-                    ->where('industry_id', $industry->id)
-                    ->update(['name' => $name]);
-            } else {
-                $industry->industryOptions()->create([
-                    'name' => $name,
-                ]);
-            }
-        }
     }
 
     protected function storeImage(Request $request, Industry $industry): void

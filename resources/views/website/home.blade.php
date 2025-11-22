@@ -55,12 +55,9 @@
             <div class="row gy-5 align-items-center about-wrapper">
                 <div class="col-lg-5">
                     <div class="about-visual rounded-4 overflow-hidden shadow-lg">
-                        <!-- <img src="images/about-left.svg"
-                                                                                                                                                                                alt="Stacked cards showing real-world solutions and proven results"
-                                                                                                                                                                                class="img-fluid w-100" /> -->
-                        <img src="{{ asset('assets/website/images/small_about.png') }}" alt=""
+                        <img src="{{ asset('assets/website/images/about_1.png') }}" alt=""
                             class="img-fluid w-100 mt-3" />
-                        <img src="{{ asset('assets/website/images/small_about.png') }}" alt=""
+                        <img src="{{ asset('assets/website/images/about_2.png') }}" alt=""
                             class="img-fluid w-100 mt-3" />
                     </div>
                 </div>
@@ -133,64 +130,71 @@ can perform tasks that typically require human intelligence.';
         $serviceItemIndex = 0;
     @endphp
 
-    <!-- Services Section -->
-    <section class="services-section" id="services">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="services-header mb-5">
-                        <div class="small-tag mb-3">
-                            <span class="tag-icon"></span>
-                            <span>Services</span>
+    @if ($serviceItems->isNotEmpty())
+        <!-- Services Section -->
+        <section class="services-section" id="services">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="services-header mb-5">
+                            <div class="small-tag mb-3">
+                                <span class="tag-icon"></span>
+                                <span>Services</span>
+                            </div>
+                            <h2 class="services-title">OUR SERVICES</h2>
                         </div>
-                        <h2 class="services-title">OUR SERVICES</h2>
                     </div>
                 </div>
-            </div>
-            <div class="row g-4">
-                <!-- Services List -->
-                <div class="col-lg-8">
-                    <div class="row g-3">
-                        @forelse ($serviceColumns as $column)
-                            <div class="col-md-6">
-                                @foreach ($column as $service)
-                                    @php
-                                        $isFirstService = $serviceItemIndex === 0;
-                                        $serviceItemIndex++;
-                                    @endphp
-                                    <div class="service-item mt-2 {{ $isFirstService ? 'active' : '' }}"
-                                        data-service="{{ $service['id'] ?? $serviceItemIndex }}"
-                                        data-title="{{ strtoupper($service['name']) }}"
-                                        data-description="{{ e($service['description']) }}">
-                                        <div class="service-icon-wrapper">
-                                            <div class="service-icon"></div>
+                <div class="row g-4">
+                    <!-- Services List -->
+                    <div class="col-lg-8">
+                        <div class="row g-3">
+                            @forelse ($serviceColumns as $column)
+                                <div class="col-md-6">
+                                    @foreach ($column as $service)
+                                        @php
+                                            $isFirstService = $serviceItemIndex === 0;
+                                            $serviceItemIndex++;
+                                        @endphp
+                                        <div class="service-item mt-2 {{ $isFirstService ? 'active' : '' }}"
+                                            data-service="{{ $service['id'] ?? $serviceItemIndex }}"
+                                            data-title="{{ strtoupper($service['name']) }}"
+                                            data-description="{{ e($service['description']) }}">
+                                            <div class="service-icon-wrapper">
+                                                <div class="service-icon">
+                                                    @if (!empty($service['icon']))
+                                                        <img src="{{ $service['icon'] }}" alt="{{ $service['name'] }}"
+                                                            style="width: 100%; height: 100%; object-fit: contain;">
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <span class="service-name">{{ strtoupper($service['name']) }}</span>
                                         </div>
-                                        <span class="service-name">{{ strtoupper($service['name']) }}</span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @empty
-                            <div class="col-12">
-                                <p class="text-muted">Services will be available soon.</p>
-                            </div>
-                        @endforelse
+                                    @endforeach
+                                </div>
+                            @empty
+                                <div class="col-12">
+                                    <p class="text-muted">Services will be available soon.</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
-                </div>
-                <!-- Description Panel -->
-                <div class="col-lg-4">
-                    <div class="service-description-panel">
-                        <h3 class="service-description-title" id="service-title">
-                            {{ strtoupper($defaultServiceTitle) }}
-                        </h3>
-                        <div class="service-description-divider"></div>
-                        <p class="service-description-text" id="service-description">
-                            {{ $defaultServiceDescription }}
-                        </p>
+                    <!-- Description Panel -->
+                    <div class="col-lg-4">
+                        <div class="service-description-panel">
+                            <h3 class="service-description-title" id="service-title">
+                                {{ strtoupper($defaultServiceTitle) }}
+                            </h3>
+                            <div class="service-description-divider"></div>
+                            <p class="service-description-text" id="service-description">
+                                {{ $defaultServiceDescription }}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
     @push('js')
         @once
@@ -201,8 +205,7 @@ can perform tasks that typically require human intelligence.';
     @endpush
 
     <!-- Industries Section -->
-    @if (false)
-
+    @if ($industries->isNotEmpty())
         <section class="industries-section" id="industries">
             <div class="container">
                 <!-- Header -->
@@ -250,7 +253,7 @@ can perform tasks that typically require human intelligence.';
                 <!-- Main Content Area -->
                 <div class="row g-4 mb-5">
                     <!-- Left Panel - Image -->
-                    <div class="col-lg-7">
+                    <div class="col-lg-12">
                         <div class="industry-visual-panel position-relative rounded-4 overflow-hidden">
                             <div class="industry-visual-placeholder" id="industry-visual-placeholder"
                                 @if ($industries->isNotEmpty() && $industries->first()['image']) style="background-image: url('{{ $industries->first()['image'] }}'); background-size: cover;
@@ -264,44 +267,19 @@ can perform tasks that typically require human intelligence.';
                             </div>
                         </div>
                     </div>
-
-                    <!-- Right Panel - Services List -->
-                    <div class="col-lg-5">
-                        <div class="industry-services-panel rounded-4">
-                            <h3 class="industry-services-title" id="industry-services-title">
-                                {{ $industries->isNotEmpty() ? strtoupper($industries->first()['name']) : 'INDUSTRIES' }}
-                            </h3>
-                            <div class="industry-services-divider"></div>
-                            <ul class="industry-services-list list-unstyled mb-0" id="industry-services-list">
-                                @if ($industries->isNotEmpty())
-                                    @foreach ($industries->first()['options'] as $option)
-                                        <li class="industry-service-item">
-                                            <span class="service-arrow">→</span>
-                                            <span>{{ $option }}</span>
-                                        </li>
-                                    @endforeach
-                                @endif
-                            </ul>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Description Section -->
                 <div class="row">
                     <div class="col-12">
                         <div class="industry-description">
-                            <p class="industry-description-text" id="industry-description-text">
-                                {{ $industries->isNotEmpty()
+                            <div class="industry-description-text" id="industry-description-text">
+                                {!! $industries->isNotEmpty()
                                     ? $industries->first()['description']
-                                    : 'Industry description will
-                                                                                                                        be available soon.' }}
-                            </p>
+                                    : 'Industry description will be available soon.' !!}
+                            </div>
                             <ul class="industry-description-list" id="industry-description-list">
-                                @if ($industries->isNotEmpty())
-                                    @foreach ($industries->first()['options'] as $option)
-                                        <li>{{ $option }}</li>
-                                    @endforeach
-                                @endif
+                                <!-- Industry description items will be displayed here -->
                             </ul>
                         </div>
                     </div>
@@ -310,85 +288,23 @@ can perform tasks that typically require human intelligence.';
         </section>
     @endif
 
-
-    <!-- Valuable Customers Section -->
-    <section class="customers-section" id="testimonials">
+    <!-- Work Section -->
+    <section class="work-section" id="work">
         <div class="container">
-            <!-- Header and Stats Row -->
-            <div class="row mb-5">
-                <div class="col-lg-7">
-                    <div class="customers-header mb-4">
-                        <div class="small-tag mb-3">
-                            <span class="tag-icon"></span>
-                            <span>Valuable Customers</span>
-                        </div>
-                        <h2 class="customers-title">
-                            Trusted by Visionary Startups & <span class="highlight-blue">Innovators<span
-                                    class="highlight-diamond">◆</span></span>
-                        </h2>
-                    </div>
-                    <!-- Customer Rating -->
-                    <div class="customer-rating d-flex align-items-center gap-3">
-                        <div class="rating-avatars d-flex">
-                            <div class="rating-avatar"></div>
-                            <div class="rating-avatar"></div>
-                            <div class="rating-avatar"></div>
-                        </div>
-                        <div class="rating-content">
-                            <div class="rating-score d-flex align-items-center gap-2 mb-1">
-                                <span class="rating-number">4.8</span>
-                                <div class="rating-stars">
-                                    <span class="star-icon">★</span>
-                                    <span class="star-icon">★</span>
-                                    <span class="star-icon">★</span>
-                                    <span class="star-icon">★</span>
-                                    <span class="star-icon">★</span>
-                                </div>
-                            </div>
-                            <p class="rating-text mb-0">Customer Rating Of TechAI</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-5">
-                    <div class="stats-grid">
-                        <div class="stat-item stat-item-highlight">
-                            <div class="stat-number">420+</div>
-                            <div class="stat-label">Projects Delivered</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">14+</div>
-                            <div class="stat-label">Years in UX/UI</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">300+</div>
-                            <div class="stat-label">Clients Worldwide</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">+250</div>
-                            <div class="stat-label">Client Rating</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Separator Line -->
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="customers-separator"></div>
-                </div>
-            </div>
-
-            <!-- Client Logos -->
             <div class="row">
                 <div class="col-12">
-                    <div class="client-logos d-flex flex-wrap align-items-center justify-content-center gap-5">
-                        <div class="client-logo">Zenza</div>
-                        <div class="client-logo">innovi</div>
-                        <div class="client-logo">techtid</div>
-                        <div class="client-logo">Lum Lab</div>
-                        <div class="client-logo">LAUNCHLAN</div>
-                        <div class="client-logo">Lum Lab</div>
+                    <div class="services-header mb-5">
+                        <div class="small-tag mb-3">
+                            <span class="tag-icon"></span>
+                            <span>Workflow</span>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <img src="{{ asset('assets/website/images/work.png') }}" alt="Our Work Process"
+                        class="img-fluid w-100">
                 </div>
             </div>
         </div>
@@ -431,77 +347,6 @@ can perform tasks that typically require human intelligence.';
     @endif
 
 
-    <!-- Testimonials Section -->
-    <section class="testimonials-section" id="testimonials">
-        <div class="container">
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="testimonials-header">
-                        <div class="small-tag mb-3">
-                            <span class="tag-icon"></span>
-                            <span>Testimonials</span>
-                        </div>
-                        <h2 class="testimonials-title">WHAT OUR CLIENTS SAY</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="testimonials-carousel-wrapper position-relative">
-                        <div class="swiper testimonials-swiper" id="testimonialsSwiper">
-                            <div class="swiper-wrapper">
-                                @forelse ($testimonials as $testimonial)
-                                    <div class="swiper-slide">
-                                        <div class="testimonial-card">
-
-                                            <p class="testimonial-text">
-                                                "{{ $testimonial->description }}"
-                                            </p>
-                                            <div class="testimonial-author">
-                                                <div class="author-avatar"></div>
-                                                <div class="author-info">
-                                                    <div class="author-name">{{ $testimonial->name }}</div>
-                                                    <div class="author-role">Client</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @empty
-                                    <div class="swiper-slide">
-                                        <div class="testimonial-card text-center">
-                                            <p class="testimonial-text">Testimonials will appear soon.</p>
-                                        </div>
-                                    </div>
-                                @endforelse
-                            </div>
-                        </div>
-                        <!-- Navigation Arrows -->
-                        <div class="testimonials-nav">
-                            <button class="testimonial-nav-btn testimonial-prev">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </button>
-                            <button class="testimonial-nav-btn testimonial-next active">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Decorative Elements -->
-        <div class="testimonials-decorative">
-            <div class="decorative-shape shape-1"></div>
-            <div class="decorative-shape shape-2"></div>
-        </div>
-    </section>
 
     <!-- Contact Us Section -->
     <section class="contact-section" id="contact">

@@ -7,7 +7,13 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header border-0 d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-0">{{ $service->name }}</h4>
+                        <div class="d-flex align-items-center gap-2">
+                            @if ($service->icon)
+                                <img src="{{ asset('uploads/' . $service->icon) }}" alt="{{ $service->name }}"
+                                    style="width: 48px; height: 48px; object-fit: contain;">
+                            @endif
+                            <h4 class="mb-0">{{ $service->name }}</h4>
+                        </div>
                         <span class="badge {{ $service->status === 'active' ? 'bg-label-success' : 'bg-label-secondary' }}">
                             {{ ucfirst($service->status) }}
                         </span>
@@ -20,8 +26,23 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted mb-1">Description</p>
-                    <p>{{ $service->description ?: 'No description provided.' }}</p>
+                    @if ($service->icon)
+                        <div class="mb-4">
+                            <p class="text-muted mb-2">Icon</p>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="{{ asset('uploads/' . $service->icon) }}" alt="{{ $service->name }}"
+                                    class="img-thumbnail" style="max-width: 150px; max-height: 150px; object-fit: contain;">
+                                <div>
+                                    <small class="text-muted d-block">File: {{ basename($service->icon) }}</small>
+                                    <small class="text-muted">Path: {{ $service->icon }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    <div>
+                        <p class="text-muted mb-1">Description</p>
+                        <p>{{ $service->description ?: 'No description provided.' }}</p>
+                    </div>
                 </div>
             </div>
         </div>

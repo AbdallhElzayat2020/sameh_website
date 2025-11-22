@@ -38,6 +38,7 @@
             <table class="table table-hover mb-0 align-middle">
                 <thead>
                     <tr>
+                        <th>Icon</th>
                         <th>Name</th>
                         <th>Status</th>
                         <th>Description</th>
@@ -47,6 +48,14 @@
                 <tbody>
                     @forelse ($services as $service)
                         <tr>
+                            <td>
+                                @if ($service->icon)
+                                    <img src="{{ asset('uploads/' . $service->icon) }}" alt="{{ $service->name }}"
+                                        style="width: 50px; height: 50px; object-fit: contain; border-radius: 4px;">
+                                @else
+                                    <span class="text-muted">—</span>
+                                @endif
+                            </td>
                             <td>
                                 <a href="{{ route('dashboard.services.show', $service) }}"
                                     class="fw-semibold text-decoration-none">
@@ -79,7 +88,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">No services yet.</td>
+                            <td colspan="5" class="text-center text-muted py-4">No services yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

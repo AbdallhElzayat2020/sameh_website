@@ -39,7 +39,6 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Options Count</th>
                         <th>Description</th>
                         <th class="text-end">Actions</th>
                     </tr>
@@ -54,9 +53,12 @@
                                 </a>
                             </td>
                             <td>
-                                <span class="badge bg-label-primary">{{ $industry->industry_options_count }}</span>
+                                description when you view the industry
+                                <a href="{{ route('dashboard.industries.show', $industry) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
                             </td>
-                            <td>{{ Str::limit($industry->description, 80) }}</td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">
                                     <a href="{{ route('dashboard.industries.edit', $industry) }}"
@@ -76,7 +78,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">No industries yet.</td>
+                            <td colspan="3" class="text-center text-muted py-4">No industries yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -8,7 +8,7 @@
             <a href="{{ route('dashboard.services.index') }}" class="btn btn-link">Back to list</a>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('dashboard.services.update', $service) }}">
+            <form method="POST" action="{{ route('dashboard.services.update', $service) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 @include('dashboard.services.partials.form', ['service' => $service])
