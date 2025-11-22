@@ -69,13 +69,6 @@
             </a>
         </li>
 
-        <li class="menu-item {{ request()->routeIs('dashboard.testimonials.*') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.testimonials.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-quote"></i>
-                <div data-i18n="Testimonials">Testimonials</div>
-            </a>
-        </li>
-
         <li class="menu-item {{ request()->routeIs('dashboard.contact-messages.*') ? 'active' : '' }}">
             <a href="{{ route('dashboard.contact-messages.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-mail"></i>

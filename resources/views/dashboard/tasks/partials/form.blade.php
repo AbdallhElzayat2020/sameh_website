@@ -31,7 +31,7 @@
     <div class="col-md-6">
         <label for="task_number" class="form-label">Task Number <span class="text-danger">*</span></label>
         <input type="text" class="form-control" id="task_number" name="task_number"
-            value="{{ old('task_number', $task->task_number ?? '') }}" required>
+            value="{{ old('task_number', $taskNumber ?? ($task->task_number ?? '')) }}" readonly required>
         @error('task_number')
             <div class="text-danger small">{{ $message }}</div>
         @enderror

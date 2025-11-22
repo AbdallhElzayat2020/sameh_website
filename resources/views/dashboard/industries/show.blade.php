@@ -35,23 +35,7 @@
                 @endif
                 <div class="col-12">
                     <h5 class="mb-3">Description</h5>
-                    <p class="text-muted">{{ $industry->description }}</p>
-                </div>
-                <div class="col-12">
-                    <h5 class="mb-3">Options ({{ $industry->industryOptions->count() }})</h5>
-                    @if ($industry->industryOptions->count() > 0)
-                        <div class="list-group">
-                            @foreach ($industry->industryOptions as $option)
-                                <div class="list-group-item">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span>{{ $option->name }}</span>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <p class="text-muted">No options available.</p>
-                    @endif
+                    <div class="text-muted">{!! $industry->description !!}</div>
                 </div>
             </div>
         </div>

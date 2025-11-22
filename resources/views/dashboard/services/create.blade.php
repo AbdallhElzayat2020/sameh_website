@@ -8,7 +8,7 @@
             <a href="{{ route('dashboard.services.index') }}" class="btn btn-link">Back to list</a>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('dashboard.services.store') }}">
+            <form method="POST" action="{{ route('dashboard.services.store') }}" enctype="multipart/form-data">
                 @csrf
                 @include('dashboard.services.partials.form')
                 <div class="d-flex justify-content-end mt-4">

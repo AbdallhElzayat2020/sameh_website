@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
@@ -30,7 +32,15 @@ class ServiceController extends Controller
 
     public function store(ServiceRequest $request)
     {
-        Service::create($request->validated());
+        $data = $request->safe()->only(['name', 'description', 'status']);
+
+        if ($request->hasFile('icon')) {
+            $filename = Str::uuid() . '.' . $request->file('icon')->getClientOriginalExtension();
+            $path = $request->file('icon')->storeAs('services', $filename, 'uploads');
+            $data['icon'] = $path;
+        }
+
+        Service::create($data);
 
         return redirect()
             ->route('dashboard.services.index')
@@ -49,7 +59,16 @@ class ServiceController extends Controller
 
     public function update(ServiceRequest $request, Service $service)
     {
-        $service->update($request->validated());
+        $data = $request->safe()->only(['name', 'description', 'status']);
+
+        if ($request->hasFile('icon')) {
+            $this->deleteIcon($service);
+            $filename = Str::uuid() . '.' . $request->file('icon')->getClientOriginalExtension();
+            $path = $request->file('icon')->storeAs('services', $filename, 'uploads');
+            $data['icon'] = $path;
+        }
+
+        $service->update($data);
 
         return redirect()
             ->route('dashboard.services.index')
@@ -58,10 +77,18 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
+        $this->deleteIcon($service);
         $service->delete();
 
         return redirect()
             ->route('dashboard.services.index')
             ->with('success', 'Service deleted successfully.');
+    }
+
+    protected function deleteIcon(Service $service): void
+    {
+        if ($service->icon && Storage::disk('uploads')->exists($service->icon)) {
+            Storage::disk('uploads')->delete($service->icon);
+        }
     }
 }

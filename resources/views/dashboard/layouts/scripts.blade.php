@@ -16,8 +16,8 @@
 
 
 <!-- Summernote JS -->
+<!-- Summernote JS -->
 <script src="{{ asset('vendor/summernote/summernote-bs4.min.js') }}"></script>
-
 @stack('js')
 @stack('scripts')
 <!-- Vendors JS -->

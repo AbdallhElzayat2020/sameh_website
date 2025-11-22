@@ -47,8 +47,9 @@ class TaskController extends Controller
     {
         $clients = Client::query()->orderBy('name')->get(['id', 'client_code', 'name']);
         $services = \App\Models\Service::where('status', 'active')->orderBy('name')->get();
+        $taskNumber = Task::nextTaskNumber();
 
-        return view('dashboard.tasks.create', compact('clients', 'services'));
+        return view('dashboard.tasks.create', compact('clients', 'services', 'taskNumber'));
     }
 
     public function store(TaskRequest $request)
@@ -66,6 +67,11 @@ class TaskController extends Controller
                     ->withErrors(['language_pair' => 'At least one language pair is required.']);
             }
 
+            // Generate task number automatically if not provided
+            if (empty($data['task_number'])) {
+                $data['task_number'] = Task::nextTaskNumber();
+            }
+
             $task = Task::create(
                 $data + ['created_by' => Auth::id()]
             );
@@ -73,7 +79,7 @@ class TaskController extends Controller
             // Sync freelancers
             $validated = $request->validated();
             if (isset($validated['freelancer_codes'])) {
-                $freelancerCodes = array_filter($validated['freelancer_codes'], fn ($code) => ! empty(trim($code)));
+                $freelancerCodes = array_filter($validated['freelancer_codes'], fn($code) => ! empty(trim($code)));
                 if (! empty($freelancerCodes)) {
                     $task->freelancers()->sync($freelancerCodes);
                 } else {
@@ -241,7 +247,7 @@ class TaskController extends Controller
             // Sync freelancers
             $validated = $request->validated();
             if (isset($validated['freelancer_codes'])) {
-                $freelancerCodes = array_filter($validated['freelancer_codes'], fn ($code) => ! empty(trim($code)));
+                $freelancerCodes = array_filter($validated['freelancer_codes'], fn($code) => ! empty(trim($code)));
                 if (! empty($freelancerCodes)) {
                     $task->freelancers()->sync($freelancerCodes);
                 } else {
