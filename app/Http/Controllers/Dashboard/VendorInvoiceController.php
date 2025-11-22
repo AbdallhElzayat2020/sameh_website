@@ -46,13 +46,15 @@ class VendorInvoiceController extends Controller
             abort(403, 'Only administrators can edit completed invoices.');
         }
 
-        $vendorInvoice->update([
+        // Create a new invoice with the new status
+        FreelancerInvoice::create([
+            'freelancer_po_id' => $vendorInvoice->freelancer_po_id,
             'status' => $request->validated()['status'],
         ]);
 
         return redirect()
             ->route('dashboard.finance.invoices.vendor-invoices')
-            ->with('success', 'Invoice status updated successfully.');
+            ->with('success', 'New invoice created with updated status successfully.');
     }
 
     public function downloadPo(FreelancerInvoice $vendorInvoice)

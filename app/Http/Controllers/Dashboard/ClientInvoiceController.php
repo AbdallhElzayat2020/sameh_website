@@ -46,13 +46,15 @@ class ClientInvoiceController extends Controller
             abort(403, 'Only administrators can edit completed invoices.');
         }
 
-        $clientInvoice->update([
+        // Create a new invoice with the new status
+        ClientInvoice::create([
+            'client_po_id' => $clientInvoice->client_po_id,
             'status' => $request->validated()['status'],
         ]);
 
         return redirect()
             ->route('dashboard.finance.invoices.client-invoices')
-            ->with('success', 'Invoice status updated successfully.');
+            ->with('success', 'New invoice created with updated status successfully.');
     }
 
     public function downloadPo(ClientInvoice $clientInvoice)
