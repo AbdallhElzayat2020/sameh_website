@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Str;
 
 class Task extends Model
 {
@@ -26,6 +27,17 @@ class Task extends Model
         'closed_by',
         'status',
     ];
+
+    public static function nextTaskNumber(): string
+    {
+        $latestCode = self::orderByDesc('id')->value('task_number');
+
+        $code = Str::afterLast($latestCode ?? 0, 'T_');
+
+        $newCode = Str::padLeft(++$code, 5, '0');
+
+        return "T_$newCode";
+    }
 
     public function creator(): BelongsTo
     {

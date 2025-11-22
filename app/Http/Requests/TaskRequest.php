@@ -19,7 +19,7 @@ class TaskRequest extends FormRequest
 
         return [
             'task_number' => [
-                'required',
+                $taskId ? 'required' : 'nullable',
                 'string',
                 'max:100',
                 \Illuminate\Validation\Rule::unique('tasks', 'task_number')->ignore($taskId),
