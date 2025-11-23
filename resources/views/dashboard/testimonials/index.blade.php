@@ -23,10 +23,12 @@
                             <a href="{{ route('dashboard.testimonials.index') }}" class="btn btn-link">Reset</a>
                         @endif
                     </form>
-                    <a href="{{ route('dashboard.testimonials.create') }}" class="btn btn-primary px-3">
-                        <i class="ti ti-plus me-1"></i>
-                        New Testimonial
-                    </a>
+                    @can('Create Testimonial')
+                        <a href="{{ route('dashboard.testimonials.create') }}" class="btn btn-primary px-3">
+                            <i class="ti ti-plus me-1"></i>
+                            New Testimonial
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -42,6 +44,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $canUpdateTestimonial = Gate::allows('Update Testimonial');
+                        $canDeleteTestimonial = Gate::allows('Delete Testimonial');
+                    @endphp
                     @forelse ($testimonials as $testimonial)
                         <tr>
                             <td class="fw-semibold">{{ $testimonial->name }}</td>
@@ -57,18 +63,22 @@
                             <td>{{ Str::limit($testimonial->description, 80) }}</td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('dashboard.testimonials.edit', $testimonial) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        Edit
-                                    </a>
-                                    <form method="POST" action="{{ route('dashboard.testimonials.destroy', $testimonial) }}"
-                                        onsubmit="return confirm('Delete this testimonial?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    @if($canUpdateTestimonial)
+                                        <a href="{{ route('dashboard.testimonials.edit', $testimonial) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    @endif
+                                    @if($canDeleteTestimonial)
+                                        <form method="POST" action="{{ route('dashboard.testimonials.destroy', $testimonial) }}"
+                                            onsubmit="return confirm('Delete this testimonial?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

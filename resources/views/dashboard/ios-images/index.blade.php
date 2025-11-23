@@ -23,10 +23,12 @@
                             <a href="{{ route('dashboard.ios-images.index') }}" class="btn btn-link">Reset</a>
                         @endif
                     </form>
-                    <a href="{{ route('dashboard.ios-images.create') }}" class="btn btn-primary px-3">
-                        <i class="ti ti-plus me-1"></i>
-                        New Image
-                    </a>
+                    @can('Create IOS Image')
+                        <a href="{{ route('dashboard.ios-images.create') }}" class="btn btn-primary px-3">
+                            <i class="ti ti-plus me-1"></i>
+                            New Image
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -41,6 +43,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $canUpdateIosImage = Gate::allows('Update IOS Image');
+                        $canDeleteIosImage = Gate::allows('Delete IOS Image');
+                    @endphp
                     @forelse ($images as $image)
                         <tr>
                             <td>
@@ -51,18 +57,22 @@
                             <td>{{ $image->created_at->format('Y-m-d H:i') }}</td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('dashboard.ios-images.edit', $image) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        Edit
-                                    </a>
-                                    <form method="POST" action="{{ route('dashboard.ios-images.destroy', $image) }}"
-                                        onsubmit="return confirm('Delete this image?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    @if($canUpdateIosImage)
+                                        <a href="{{ route('dashboard.ios-images.edit', $image) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    @endif
+                                    @if($canDeleteIosImage)
+                                        <form method="POST" action="{{ route('dashboard.ios-images.destroy', $image) }}"
+                                            onsubmit="return confirm('Delete this image?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

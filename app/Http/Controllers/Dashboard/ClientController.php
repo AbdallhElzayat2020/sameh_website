@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\Media;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -15,6 +16,8 @@ class ClientController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('View Client');
+
         $clients = Client::query()
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = '%' . (string) $request->string('search')->trim() . '%';
@@ -37,6 +40,8 @@ class ClientController extends Controller
 
     public function create()
     {
+        Gate::authorize('Create Client');
+
         $c_code = Client::nextClientCode();
 
         return view('dashboard.clients.create', compact('c_code'));
@@ -44,6 +49,8 @@ class ClientController extends Controller
 
     public function store(ClientRequest $request)
     {
+        Gate::authorize('Create Client');
+
         $client = Client::create(
             $request->validated() + ['created_by' => Auth::id()]
         );
@@ -57,11 +64,15 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
+        Gate::authorize('View Client');
+
         return view('dashboard.clients.show', compact('client'));
     }
 
     public function edit(Client $client)
     {
+        Gate::authorize('Update Client');
+
         $client->load('media');
 
         return view('dashboard.clients.edit', compact('client'));
@@ -69,6 +80,8 @@ class ClientController extends Controller
 
     public function update(ClientRequest $request, Client $client)
     {
+        Gate::authorize('Update Client');
+
         $client->update($request->validated());
 
         $this->storeAttachments($request, $client);
@@ -80,6 +93,8 @@ class ClientController extends Controller
 
     public function destroy(Client $client)
     {
+        Gate::authorize('Delete Client');
+
         $disk = Storage::disk('uploads');
 
         $client->media->each(function (Media $media) use ($disk) {
@@ -98,6 +113,8 @@ class ClientController extends Controller
 
     public function downloadAttachment(Client $client, Media $media)
     {
+        Gate::authorize('Download Client Attachment');
+
         abort_if($media->mediaable_type !== Client::class || $media->mediaable_id !== $client->id, 404);
 
         $disk = Storage::disk('uploads');
@@ -108,6 +125,8 @@ class ClientController extends Controller
 
     public function destroyAttachment(Client $client, Media $media)
     {
+        Gate::authorize('Delete Client Attachment');
+
         abort_if($media->mediaable_type !== Client::class || $media->mediaable_id !== $client->id, 404);
 
         $disk = Storage::disk('uploads');

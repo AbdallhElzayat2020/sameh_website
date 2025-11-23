@@ -9,6 +9,7 @@ use App\Models\Revenue;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -17,6 +18,8 @@ class RevenueController extends Controller
 {
     public function index(): View
     {
+        Gate::authorize('View Revenue');
+
         $revenues = Revenue::query()
             ->latest('month')
             ->paginate(12);
@@ -26,11 +29,15 @@ class RevenueController extends Controller
 
     public function create(): View
     {
+        Gate::authorize('Create Revenue');
+
         return view('dashboard.finance.revenues.create');
     }
 
     public function store(RevenueRequest $request): RedirectResponse
     {
+        Gate::authorize('Create Revenue');
+
         $revenue = Revenue::create($this->preparePayload($request));
 
         if ($request->hasFile('sheet')) {
@@ -44,11 +51,15 @@ class RevenueController extends Controller
 
     public function edit(Revenue $revenue): View
     {
+        Gate::authorize('Update Revenue');
+
         return view('dashboard.finance.revenues.edit', compact('revenue'));
     }
 
     public function update(RevenueRequest $request, Revenue $revenue): RedirectResponse
     {
+        Gate::authorize('Update Revenue');
+
         $revenue->update($this->preparePayload($request));
 
         if ($request->hasFile('sheet')) {
@@ -62,6 +73,8 @@ class RevenueController extends Controller
 
     public function destroy(Revenue $revenue): RedirectResponse
     {
+        Gate::authorize('Delete Revenue');
+
         $this->deleteSheet($revenue);
 
         $revenue->delete();
@@ -73,6 +86,8 @@ class RevenueController extends Controller
 
     public function uploadSheet(FinanceSheetRequest $request, Revenue $revenue): RedirectResponse
     {
+        Gate::authorize('Upload Revenue Sheet');
+
         $this->storeSheet($revenue, $request->file('sheet'));
 
         return redirect()
@@ -82,6 +97,8 @@ class RevenueController extends Controller
 
     public function downloadSheet(Revenue $revenue)
     {
+        Gate::authorize('Download Revenue Sheet');
+
         $sheet = $revenue->sheet;
 
         abort_if(! $sheet, 404);

@@ -7,10 +7,12 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">قائمة الصلاحيات</h5>
-                    <a href="{{ route('dashboard.permissions.create') }}" class="btn btn-primary">
-                        <i class="ti ti-plus me-1"></i>
-                        إضافة صلاحية جديدة
-                    </a>
+                    @can('Create Permission')
+                        <a href="{{ route('dashboard.permissions.create') }}" class="btn btn-primary">
+                            <i class="ti ti-plus me-1"></i>
+                            إضافة صلاحية جديدة
+                        </a>
+                    @endcan
                 </div>
                 <div class="card-body">
                     @if(session('success'))
@@ -32,6 +34,10 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $canUpdatePermission = Gate::allows('Update Permission');
+                                    $canDeletePermission = Gate::allows('Delete Permission');
+                                @endphp
                                 @forelse($permissions as $permission)
                                     <tr>
                                         <td>{{ $permission->id }}</td>
@@ -54,19 +60,23 @@
                                         <td>{{ $permission->created_at->format('Y-m-d') }}</td>
                                         <td>
                                             <div class="d-inline-block">
-                                                <a href="{{ route('dashboard.permissions.edit', $permission) }}"
-                                                    class="btn btn-sm btn-icon btn-label-primary">
-                                                    <i class="ti ti-edit"></i>
-                                                </a>
-                                                <form action="{{ route('dashboard.permissions.destroy', $permission) }}"
-                                                    method="POST" class="d-inline-block"
-                                                    onsubmit="return confirm('هل أنت متأكد من حذف هذه الصلاحية؟')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-icon btn-label-danger">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </form>
+                                                @if($canUpdatePermission)
+                                                    <a href="{{ route('dashboard.permissions.edit', $permission) }}"
+                                                        class="btn btn-sm btn-icon btn-label-primary">
+                                                        <i class="ti ti-edit"></i>
+                                                    </a>
+                                                @endif
+                                                @if($canDeletePermission)
+                                                    <form action="{{ route('dashboard.permissions.destroy', $permission) }}"
+                                                        method="POST" class="d-inline-block"
+                                                        onsubmit="return confirm('هل أنت متأكد من حذف هذه الصلاحية؟')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-icon btn-label-danger">
+                                                            <i class="ti ti-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

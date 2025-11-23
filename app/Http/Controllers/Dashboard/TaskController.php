@@ -11,6 +11,7 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -20,6 +21,8 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('View Task');
+
         $tasks = Task::query()
             ->with(['creator', 'closer', 'freelancers', 'referencedTask'])
             ->when($request->filled('search'), function ($query) use ($request) {
@@ -45,6 +48,8 @@ class TaskController extends Controller
 
     public function create()
     {
+        Gate::authorize('Create Task');
+
         $clients = Client::query()->orderBy('name')->get(['id', 'client_code', 'name']);
         $services = \App\Models\Service::where('status', 'active')->orderBy('name')->get();
         $taskNumber = Task::nextTaskNumber();
@@ -54,6 +59,8 @@ class TaskController extends Controller
 
     public function store(TaskRequest $request)
     {
+        Gate::authorize('Create Task');
+
         DB::beginTransaction();
 
         try {
@@ -79,7 +86,7 @@ class TaskController extends Controller
             // Sync freelancers
             $validated = $request->validated();
             if (isset($validated['freelancer_codes'])) {
-                $freelancerCodes = array_filter($validated['freelancer_codes'], fn($code) => ! empty(trim($code)));
+                $freelancerCodes = array_filter($validated['freelancer_codes'], fn ($code) => ! empty(trim($code)));
                 if (! empty($freelancerCodes)) {
                     $task->freelancers()->sync($freelancerCodes);
                 } else {
@@ -120,6 +127,8 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
+        Gate::authorize('View Task');
+
         $task->load(['creator', 'closer', 'media', 'freelancers', 'services', 'referencedTask']);
 
         return view('dashboard.tasks.show', compact('task'));
@@ -127,6 +136,8 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
+        Gate::authorize('Update Task');
+
         $task->load(['media', 'freelancers', 'services']);
         $clients = Client::query()->orderBy('name')->get(['id', 'client_code', 'name']);
         $services = \App\Models\Service::where('status', 'active')->orderBy('name')->get();
@@ -136,6 +147,8 @@ class TaskController extends Controller
 
     public function findClientOrFreelancer(Request $request)
     {
+        Gate::authorize('Find Client Or Freelancer');
+
         $code = $request->input('code');
 
         if (! $code) {
@@ -172,6 +185,8 @@ class TaskController extends Controller
 
     public function findTask(Request $request)
     {
+        Gate::authorize('Find Task');
+
         $taskNumber = $request->input('task_number');
 
         if (! $taskNumber) {
@@ -195,6 +210,8 @@ class TaskController extends Controller
 
     public function uploadFiles(Request $request, Task $task)
     {
+        Gate::authorize('Upload Task Files');
+
         $validated = $request->validate([
             'attachments' => ['required', 'array', 'min:1'],
             'attachments.*' => [
@@ -229,6 +246,8 @@ class TaskController extends Controller
 
     public function update(TaskRequest $request, Task $task)
     {
+        Gate::authorize('Update Task');
+
         DB::beginTransaction();
 
         try {
@@ -247,7 +266,7 @@ class TaskController extends Controller
             // Sync freelancers
             $validated = $request->validated();
             if (isset($validated['freelancer_codes'])) {
-                $freelancerCodes = array_filter($validated['freelancer_codes'], fn($code) => ! empty(trim($code)));
+                $freelancerCodes = array_filter($validated['freelancer_codes'], fn ($code) => ! empty(trim($code)));
                 if (! empty($freelancerCodes)) {
                     $task->freelancers()->sync($freelancerCodes);
                 } else {
@@ -289,6 +308,8 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
+        Gate::authorize('Delete Task');
+
         DB::transaction(function () use ($task) {
             $disk = Storage::disk('uploads');
 
@@ -309,6 +330,8 @@ class TaskController extends Controller
 
     public function downloadAttachment(Task $task, Media $media)
     {
+        Gate::authorize('Download Task Attachment');
+
         abort_if(
             $media->mediaable_type !== Task::class || $media->mediaable_id !== $task->id,
             404
@@ -322,6 +345,8 @@ class TaskController extends Controller
 
     public function storeAttachment(Request $request, Task $task)
     {
+        Gate::authorize('Store Task Attachment');
+
         $validated = $request->validate([
             'file_name' => ['required', 'string', 'max:255'],
             'file_status' => ['required', 'in:DTP,Update'],
@@ -385,6 +410,8 @@ class TaskController extends Controller
 
     public function destroyAttachment(Task $task, Media $media)
     {
+        Gate::authorize('Delete Task Attachment');
+
         abort_if(
             $media->mediaable_type !== Task::class || $media->mediaable_id !== $task->id,
             404

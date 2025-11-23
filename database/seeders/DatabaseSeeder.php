@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // إنشاء حساب Admin مع الصلاحيات
         $this->call([
+            SystemPermissionSeeder::class,
             AdminSeeder::class,
         ]);
 

@@ -7,10 +7,12 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">قائمة المستخدمين</h5>
-                    <a href="{{ route('dashboard.users.create') }}" class="btn btn-primary">
-                        <i class="ti ti-plus me-1"></i>
-                        إضافة مستخدم جديد
-                    </a>
+                    @can('Create User')
+                        <a href="{{ route('dashboard.users.create') }}" class="btn btn-primary">
+                            <i class="ti ti-plus me-1"></i>
+                            إضافة مستخدم جديد
+                        </a>
+                    @endcan
                 </div>
                 <div class="card-body">
                     @if(session('success'))
@@ -42,6 +44,10 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $canUpdateUser = Gate::allows('Update User');
+                                    $canDeleteUser = Gate::allows('Delete User');
+                                @endphp
                                 @forelse($users as $user)
                                     <tr>
                                         <td>{{ $user->id }}</td>
@@ -65,11 +71,13 @@
                                         <td>{{ $user->created_at->format('Y-m-d') }}</td>
                                         <td>
                                             <div class="d-inline-block">
-                                                <a href="{{ route('dashboard.users.edit', $user) }}"
-                                                    class="btn btn-sm btn-icon btn-label-primary">
-                                                    <i class="ti ti-edit"></i>
-                                                </a>
-                                                @if(!$user->isAdministrator())
+                                                @if($canUpdateUser)
+                                                    <a href="{{ route('dashboard.users.edit', $user) }}"
+                                                        class="btn btn-sm btn-icon btn-label-primary">
+                                                        <i class="ti ti-edit"></i>
+                                                    </a>
+                                                @endif
+                                                @if($canDeleteUser && !$user->isAdministrator())
                                                     <form action="{{ route('dashboard.users.destroy', $user) }}" method="POST"
                                                         class="d-inline-block"
                                                         onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">

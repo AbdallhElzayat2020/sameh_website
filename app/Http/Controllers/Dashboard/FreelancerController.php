@@ -8,6 +8,7 @@ use App\Models\Freelancer;
 use App\Models\Media;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -15,6 +16,8 @@ class FreelancerController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('View Freelancer');
+
         $freelancers = Freelancer::query()
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = '%' . (string) $request->string('search')->trim() . '%';
@@ -36,6 +39,8 @@ class FreelancerController extends Controller
 
     public function create()
     {
+        Gate::authorize('Create Freelancer');
+
         $services = Service::query()->orderBy('name')->get(['id', 'name']);
         $f_code = Freelancer::nextFreelancerCode();
 
@@ -44,6 +49,8 @@ class FreelancerController extends Controller
 
     public function store(FreelancerRequest $request)
     {
+        Gate::authorize('Create Freelancer');
+
         $freelancer = Freelancer::create($this->mappedData($request));
         $freelancer->services()->sync($request->input('service_ids', []));
         $this->storeAttachments($request, $freelancer);
@@ -55,6 +62,8 @@ class FreelancerController extends Controller
 
     public function show(Freelancer $freelancer)
     {
+        Gate::authorize('View Freelancer');
+
         $freelancer->load(['services', 'media']);
 
         return view('dashboard.freelancers.show', compact('freelancer'));
@@ -62,6 +71,8 @@ class FreelancerController extends Controller
 
     public function edit(Freelancer $freelancer)
     {
+        Gate::authorize('Update Freelancer');
+
         $services = Service::query()->orderBy('name')->get(['id', 'name']);
         $freelancer->load(['services', 'media']);
 
@@ -70,6 +81,8 @@ class FreelancerController extends Controller
 
     public function update(FreelancerRequest $request, Freelancer $freelancer)
     {
+        Gate::authorize('Update Freelancer');
+
         $freelancer->update($this->mappedData($request));
         $freelancer->services()->sync($request->input('service_ids', []));
         $this->storeAttachments($request, $freelancer);
@@ -81,6 +94,8 @@ class FreelancerController extends Controller
 
     public function destroy(Freelancer $freelancer)
     {
+        Gate::authorize('Delete Freelancer');
+
         $disk = Storage::disk('uploads');
 
         $freelancer->media->each(function (Media $media) use ($disk) {
@@ -99,6 +114,8 @@ class FreelancerController extends Controller
 
     public function downloadAttachment(Freelancer $freelancer, Media $media)
     {
+        Gate::authorize('Download Freelancer Attachment');
+
         abort_if($media->mediaable_type !== Freelancer::class || $media->mediaable_id !== $freelancer->id, 404);
 
         $disk = Storage::disk('uploads');
@@ -109,6 +126,8 @@ class FreelancerController extends Controller
 
     public function destroyAttachment(Freelancer $freelancer, Media $media)
     {
+        Gate::authorize('Delete Freelancer Attachment');
+
         abort_if($media->mediaable_type !== Freelancer::class || $media->mediaable_id !== $freelancer->id, 404);
 
         $disk = Storage::disk('uploads');

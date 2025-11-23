@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
@@ -15,6 +16,7 @@ class UserController extends Controller
 {
     public function index(): View
     {
+        Gate::authorize('View User');
 
         $users = User::with('role')->latest()->paginate(10);
 
@@ -23,6 +25,7 @@ class UserController extends Controller
 
     public function create(): View
     {
+        Gate::authorize('Create User');
 
         $roles = Role::all();
 
@@ -31,6 +34,7 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        Gate::authorize('Create User');
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -61,6 +65,7 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
+        Gate::authorize('Update User');
 
         $roles = Role::all();
 
@@ -69,6 +74,8 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): RedirectResponse
     {
+        Gate::authorize('Update User');
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
@@ -102,6 +109,8 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
+        Gate::authorize('Delete User');
+
         if (! Auth::user()->isAdministrator()) {
             abort(403, 'فقط Admin الأساسي يمكنه حذف المستخدمين.');
         }

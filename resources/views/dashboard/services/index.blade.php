@@ -27,10 +27,12 @@
                             <a href="{{ route('dashboard.services.index') }}" class="btn btn-link">Reset</a>
                         @endif
                     </form>
-                    <a href="{{ route('dashboard.services.create') }}" class="btn btn-primary px-3">
-                        <i class="ti ti-plus me-1"></i>
-                        New Service
-                    </a>
+                    @can('Create Service')
+                        <a href="{{ route('dashboard.services.create') }}" class="btn btn-primary px-3">
+                            <i class="ti ti-plus me-1"></i>
+                            New Service
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -46,6 +48,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $canUpdateService = Gate::allows('Update Service');
+                        $canDeleteService = Gate::allows('Delete Service');
+                    @endphp
                     @forelse ($services as $service)
                         <tr>
                             <td>
@@ -71,18 +77,22 @@
                             <td>{{ Str::limit($service->description, 80) }}</td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('dashboard.services.edit', $service) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        Edit
-                                    </a>
-                                    <form method="POST" action="{{ route('dashboard.services.destroy', $service) }}"
-                                        onsubmit="return confirm('Delete this service?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    @if($canUpdateService)
+                                        <a href="{{ route('dashboard.services.edit', $service) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    @endif
+                                    @if($canDeleteService)
+                                        <form method="POST" action="{{ route('dashboard.services.destroy', $service) }}"
+                                            onsubmit="return confirm('Delete this service?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
