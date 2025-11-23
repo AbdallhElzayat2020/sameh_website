@@ -337,19 +337,35 @@ class TaskController extends Controller
         DB::beginTransaction();
 
         try {
+            $fileStatus = $validated['file_status'];
+            $now = now();
+
             foreach ($request->file('attachments') as $attachment) {
                 $filename = Str::uuid() . '.' . $attachment->getClientOriginalExtension();
                 $path = $attachment->storeAs('tasks', $filename, 'uploads');
 
-                $task->media()->create([
+                $mediaData = [
                     'type' => $attachment->getClientOriginalExtension(),
                     'path' => $path,
                     'original_name' => $validated['file_name'],
                     'mime_type' => $attachment->getClientMimeType(),
                     'size' => $attachment->getSize(),
                     'note' => $validated['note'] ?? null,
-                    'file_status' => $validated['file_status'],
-                ]);
+                    'file_status' => $fileStatus,
+                ];
+
+                // Set timestamps based on file_status
+                if ($fileStatus === 'Update') {
+                    // For Update: set updated_at only, created_at should be null
+                    $mediaData['updated_at'] = $now;
+                    $mediaData['created_at'] = null;
+                } else {
+                    // For DTP: set created_at only, updated_at should be null
+                    $mediaData['created_at'] = $now;
+                    $mediaData['updated_at'] = null;
+                }
+
+                $task->media()->create($mediaData);
             }
 
             DB::commit();
@@ -392,17 +408,34 @@ class TaskController extends Controller
             return;
         }
 
+        $fileStatus = $request->input('file_status', 'DTP'); // Default to DTP if not provided
+        $now = now();
+
         foreach ($request->file('attachments') as $attachment) {
             $filename = Str::uuid() . '.' . $attachment->getClientOriginalExtension();
             $path = $attachment->storeAs('tasks', $filename, 'uploads');
 
-            $task->media()->create([
+            $mediaData = [
                 'type' => $attachment->getClientOriginalExtension(),
                 'path' => $path,
                 'original_name' => $attachment->getClientOriginalName(),
                 'mime_type' => $attachment->getClientMimeType(),
                 'size' => $attachment->getSize(),
-            ]);
+                'file_status' => $fileStatus,
+            ];
+
+            // Set timestamps based on file_status
+            if ($fileStatus === 'Update') {
+                // For Update: set updated_at only, created_at should be null or not set
+                $mediaData['updated_at'] = $now;
+                $mediaData['created_at'] = null;
+            } else {
+                // For DTP: set created_at only, updated_at should be null or not set
+                $mediaData['created_at'] = $now;
+                $mediaData['updated_at'] = null;
+            }
+
+            $task->media()->create($mediaData);
         }
     }
 

@@ -127,6 +127,19 @@
         <label for="notes" class="form-label">Notes</label>
         <textarea class="form-control" id="notes" name="notes" rows="4">{{ old('notes', $task->notes ?? '') }}</textarea>
     </div>
+    <div class="col-md-6">
+        <label for="file_status" class="form-label">File Status</label>
+        <select class="form-select" id="file_status" name="file_status">
+            <option value="DTP" {{ old('file_status', 'DTP') === 'DTP' ? 'selected' : '' }}>DTP</option>
+            <option value="Update" {{ old('file_status') === 'Update' ? 'selected' : '' }}>Update</option>
+        </select>
+        <small class="text-muted">Select status for uploaded files</small>
+    </div>
+    <div class="col-md-6">
+        <label for="attachments" class="form-label">Attachments</label>
+        <input type="file" class="form-control" id="attachments" name="attachments[]" multiple>
+        <small class="text-muted">Images, PDF, Word, Excel up to 20MB each.</small>
+    </div>
 </div>
 
 <div class="mt-4">
@@ -205,7 +218,10 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="service_ids[]"
                         value="{{ $service->id }}" id="service_{{ $service->id }}"
-                        {{ (old('service_ids') && in_array($service->id, old('service_ids'))) || ($task->exists && $task->services->contains($service->id)) ? 'checked' : '' }}>
+                        {{ (old('service_ids') && in_array($service->id, old('service_ids'))) ||
+                        ($task->exists && $task->services->contains($service->id))
+                            ? 'checked'
+                            : '' }}>
                     <label class="form-check-label" for="service_{{ $service->id }}">
                         {{ $service->name }}
                     </label>

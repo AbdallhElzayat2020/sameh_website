@@ -271,16 +271,36 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($task->media->sortByDesc('created_at') as $media)
+                                            @php
+                                                $sortedMedia = $task->media->sortBy(function ($media) {
+                                                    // First sort by file_status: DTP first, then Update
+                                                    $statusOrder = $media->file_status === 'DTP' ? 0 : 1;
+                                                    // Then sort by date: DTP by created_at, Update by updated_at
+                                                    $date =
+                                                        $media->file_status === 'DTP'
+                                                            ? $media->created_at ?? now()
+                                                            : $media->updated_at ?? now();
+                                                    return [$statusOrder, $date->timestamp];
+                                                });
+                                            @endphp
+                                            @foreach ($sortedMedia as $media)
                                                 <tr>
                                                     <td class="fw-semibold">{{ $media->original_name }}</td>
                                                     <td>
                                                         <small class="text-muted">
-                                                            {{ $media->created_at->format('d/m/Y h:i A') }}
+                                                            @if ($media->file_status === 'DTP' && $media->created_at)
+                                                                {{ $media->created_at->format('d/m/Y h:i A') }}
+                                                            @elseif ($media->file_status === 'Update' && $media->updated_at)
+                                                                {{ $media->updated_at->format('d/m/Y h:i A') }}
+                                                            @elseif ($media->created_at)
+                                                                {{ $media->created_at->format('d/m/Y h:i A') }}
+                                                            @else
+                                                                -
+                                                            @endif
                                                         </small>
                                                     </td>
                                                     <td>
-                                                        @if ($media->updated_at->ne($media->created_at))
+                                                        @if ($media->file_status === 'Update' && $media->updated_at)
                                                             <small class="text-muted">
                                                                 {{ $media->updated_at->format('d/m/Y h:i A') }}
                                                             </small>
